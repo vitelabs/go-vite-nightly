@@ -7,7 +7,7 @@ on:
         description: 'nightly build from'
         required: true
       tag:
-        description: 'tag'
+        description: 'tag prefix'
         required: true
 
 jobs:
