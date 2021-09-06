@@ -40,7 +40,7 @@ jobs:
     - name: Release
       uses: ncipollo/release-action@v1
       with:
-        tag: "${{ github.event.inputs.branch }}-nightly-${{ steps.version.outputs.version }}"
+        tag: "${{ github.event.inputs.tag }}-nightly-${{ steps.version.outputs.version }}"
         artifacts: "build/cmd/gvite/*.tar.gz"
         bodyFile: "build/cmd/gvite/release.sha256.log"
         prerelease: true
@@ -54,5 +54,6 @@ jobs:
       uses: docker/build-push-action@v2
       with:
         push: true
+        context: .
         file: docker/Dockerfile
-        tags: vitelabs/gvite-nightly:${{ github.event.inputs.branch }}-nightly-${{ steps.version.outputs.version }},vitelabs/gvite-nightly:${{ github.event.inputs.branch }}-latest
+        tags: vitelabs/gvite-nightly:${{ github.event.inputs.tag }}-nightly-${{ steps.version.outputs.version }},vitelabs/gvite-nightly:${{ github.event.inputs.tag }}-latest
