@@ -56,4 +56,4 @@ jobs:
         push: true
         context: .
         file: docker/Dockerfile
-        tags: vitelabs/gvite-nightly:${{ github.event.inputs.tag }}-nightly-${{ steps.version.outputs.version }},vitelabs/gvite-nightly:${{ github.event.inputs.tag }}-latest
+        tags: vitelabs/gvite-nightly:${{ github.event.inputs.tag }}-${{ steps.version.outputs.version }},vitelabs/gvite-nightly:${{ github.event.inputs.tag }}-latest,vitelabs/gvite-nightly:latest
