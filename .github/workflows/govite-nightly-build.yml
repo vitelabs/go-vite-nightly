@@ -1,6 +1,14 @@
-name: gvite-nightly-build
+name: govite-nightly-build
 
 on:
+  workflow_call:
+    inputs:
+      branch:
+        type: string
+        required: true
+      tag:
+        type: string
+        required: true  
   workflow_dispatch:
     inputs:
       branch:
@@ -14,10 +22,20 @@ jobs:
   build:
     runs-on: ubuntu-18.04
     steps:
+    # Inconsistent inputs context for workflow_dispatch and workflow_call
+    - name: Set branch and tag
+      id: step0
+      run: |
+        echo "::set-output name=branch::${{ (inputs || github.event.inputs).branch }}"
+        echo "::set-output name=tag::${{ (inputs || github.event.inputs).tag }}"
+
+    - name: Echo branch and tag
+      run: echo ${{ steps.step0.outputs.branch }} ${{ steps.step0.outputs.tag }}
+
     - uses: actions/checkout@v2
       with:
         repository: 'vitelabs/go-vite'
-        ref: '${{ github.event.inputs.branch }}'
+        ref: '${{ steps.step0.outputs.branch }}'
 
     - name: Set up Go
       uses: actions/setup-go@v2
@@ -32,7 +50,7 @@ jobs:
       run: echo "::set-output name=version::$(date +%Y%m%d%H%M)"
       
     - name: Build
-      run:  echo "${{ github.event.inputs.tag }}-nightly-${{ steps.version.outputs.version }}" > version/buildversion ; make all
+      run:  echo "${{ steps.step0.outputs.tag }}-nightly-${{ steps.version.outputs.version }}" > version/buildversion ; make all
       
     - name: Release Log
       run: cd build/cmd/gvite ;ls | grep -v ".tar.gz" | while read line; do tar zcvf $line.tar.gz $line ; openssl dgst -sha256 $line.tar.gz >> release.sha256.log ;done ; cd ../../../ 
@@ -40,11 +58,12 @@ jobs:
     - name: Release
       uses: ncipollo/release-action@v1
       with:
-        tag: "${{ github.event.inputs.tag }}-nightly-${{ steps.version.outputs.version }}"
+        tag: "${{ steps.step0.outputs.tag }}-nightly-${{ steps.version.outputs.version }}"
         artifacts: "build/cmd/gvite/*.tar.gz"
         bodyFile: "build/cmd/gvite/release.sha256.log"
         prerelease: true
         token: ${{ secrets.GITHUB_TOKEN }}
+
     - name: Log in to Docker Hub
       uses: docker/login-action@v1
       with:
@@ -56,4 +75,4 @@ jobs:
         push: true
         context: .
         file: docker/Dockerfile
-        tags: vitelabs/gvite-nightly:${{ github.event.inputs.tag }}-${{ steps.version.outputs.version }},vitelabs/gvite-nightly:${{ github.event.inputs.tag }}-latest,vitelabs/gvite-nightly:latest
+        tags: vitelabs/gvite-nightly:${{ steps.step0.outputs.tag }}-${{ steps.version.outputs.version }},vitelabs/gvite-nightly:${{ steps.step0.outputs.tag }}-latest,vitelabs/gvite-nightly:latest        
