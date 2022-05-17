@@ -1,4 +1,4 @@
-name: govite-nightly-build
+name: integration-testing
 
 on:
   workflow_call:
