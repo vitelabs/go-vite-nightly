@@ -1,4 +1,4 @@
-name: integration-testing
+name: integration-testing-generator
 
 on:
   workflow_call:
@@ -21,16 +21,9 @@ jobs:
       id: step0
       run: |
         echo "::set-output name=branch::${{ (inputs || github.event.inputs).branch }}"
-        echo "::set-output name=tag::${{ (inputs || github.event.inputs).tag }}"
 
     - name: Echo branch and tag
       run: echo ${{ steps.step0.outputs.branch }} ${{ steps.step0.outputs.tag }}
-
-    - uses: actions/checkout@v2
-      with:
-        repository: 'vitelabs/go-vite'
-        ref: '${{ steps.step0.outputs.branch }}'
-        path: go-vite
 
     - uses: actions/checkout@v2
       with:
@@ -44,11 +37,6 @@ jobs:
         ref: 'master'
         path: vite-onestop
 
-    - name: Set up Go
-      uses: actions/setup-go@v2
-      with:
-        go-version: 1.16
-
     # - name: Test && Build
     #   run: |
     #     pwd
@@ -59,10 +47,28 @@ jobs:
     #     cp go-vite/build/cmd/gvite/gvite-*-linux/gvite .
     #     ls -al
 
-    - name: Test
+    - name: Run Gvite Node
       run: |
-        docker --version
-        docker-compose --version
+        ./vite-onestop/versions/integration_test/boot
+
+    - name: Setup Node
+      uses: actions/setup-node@v2.1.2
+      with:
+        node-version: 'v16'
+    - name: Run Data Generator
+      run: |
+        pwd
+        cd go-vite-nightly/integration-testing
+        npm install
+        npx ts-node scripts/generator.ts
+        cd ../../
+        mkdir ledger
+        docker cp integration_test_s1_1:/root/.gvite/node1/devdata/ledger/blocks ledger
+        ls -al ledger/*
+        
+    - name: Post Gvite Node
+      run: |
+        ./vite-onestop/versions/integration_test/shutdown
 
        
       
