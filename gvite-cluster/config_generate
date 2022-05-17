@@ -1,0 +1,4 @@
+#!/bin/bash
+set -e
+
+sed -i s,pow_url,${POW_URL},g /root/.gvite/node_config.json

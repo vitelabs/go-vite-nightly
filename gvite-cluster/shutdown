@@ -1,0 +1,9 @@
+#!/bin/bash
+set -e
+
+workDir=$(dirname $0)
+
+echo $workDir
+touch $workDir/env.vite
+
+docker-compose --env-file $workDir/env.vite -f $workDir/docker.yml down

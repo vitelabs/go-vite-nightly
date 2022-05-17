@@ -1,0 +1,9 @@
+{
+	"networks": {
+	  "local": {
+		"http": "http://127.0.0.1:48132/",
+		"ws": "http://127.0.0.1:48132/",
+		"mnemonic": "until pupil fitness panda urge alley wheat tongue material solve save life various across hard pink mirror similar busy sketch unfair consider desert season"
+	  }
+	}
+  }

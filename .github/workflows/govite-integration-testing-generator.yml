@@ -31,25 +31,9 @@ jobs:
         ref: '${{ steps.step0.outputs.branch }}'
         path: go-vite-nightly
 
-    - uses: actions/checkout@v2
-      with:
-        repository: 'vitelabs/vite-onestop'
-        ref: 'master'
-        path: vite-onestop
-
-    # - name: Test && Build
-    #   run: |
-    #     pwd
-    #     cd go-vite
-    #     make test
-    #     make gvite-linux
-    #     cd ../
-    #     cp go-vite/build/cmd/gvite/gvite-*-linux/gvite .
-    #     ls -al
-
     - name: Run Gvite Node
       run: |
-        ./vite-onestop/versions/integration_test/boot
+        ./go-vite-nightly/gvite-cluster/boot
 
     - name: Setup Node
       uses: actions/setup-node@v2.1.2
@@ -63,12 +47,12 @@ jobs:
         npx ts-node scripts/generator.ts
         cd ../../
         mkdir ledger
-        docker cp integration_test_s1_1:/root/.gvite/node1/devdata/ledger/blocks ledger
+        docker cp gvite-cluster_s1_1:/root/.gvite/node1/devdata/ledger/blocks ledger
         ls -al ledger/*
         
     - name: Post Gvite Node
       run: |
-        ./vite-onestop/versions/integration_test/shutdown
+        ./go-vite-nightly/gvite-cluster/shutdown
 
        
       
