@@ -1,0 +1,56 @@
+name: govite-nightly-build
+
+on:
+  workflow_call:
+    inputs:
+      branch:
+        type: string
+        required: true
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'integration testing from'
+        required: true
+
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+    steps:
+    # Inconsistent inputs context for workflow_dispatch and workflow_call
+    - name: Set branch and tag
+      id: step0
+      run: |
+        echo "::set-output name=branch::${{ (inputs || github.event.inputs).branch }}"
+        echo "::set-output name=tag::${{ (inputs || github.event.inputs).tag }}"
+
+    - name: Echo branch and tag
+      run: echo ${{ steps.step0.outputs.branch }} ${{ steps.step0.outputs.tag }}
+
+    - uses: actions/checkout@v2
+      with:
+        repository: 'vitelabs/go-vite'
+        ref: '${{ steps.step0.outputs.branch }}'
+        path: go-vite
+
+    - uses: actions/checkout@v2
+      with:
+        repository: 'vitelabs/go-vite'
+        ref: '${{ steps.step0.outputs.branch }}'
+        path: go-vite
+
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.16
+
+    - name: Test && Build
+      run: |
+        pwd
+        cd go-vite
+        make test
+        make gvite-linux
+        cd ../
+        cp go-vite/build/cmd/gvite/gvite-*-linux/gvite .
+        ls -al
+       
+      
