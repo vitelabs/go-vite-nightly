@@ -6,10 +6,16 @@ on:
       branch:
         type: string
         required: true
+      tag:
+        type: string
+        required: true
   workflow_dispatch:
     inputs:
       branch:
         description: 'integration testing from'
+        required: true
+      tag:
+        description: 'tag prefix'
         required: true
 
 jobs:
@@ -21,9 +27,14 @@ jobs:
       id: step0
       run: |
         echo "::set-output name=branch::${{ (inputs || github.event.inputs).branch }}"
+        echo "::set-output name=tag::${{ (inputs || github.event.inputs).tag }}"
 
     - name: Echo branch and tag
       run: echo ${{ steps.step0.outputs.branch }} ${{ steps.step0.outputs.tag }}
+
+    - name: Set LedgerFile Version
+      id: version
+      run: echo "::set-output name=version::$(date +%Y%m%d%H%M)"
 
     - uses: actions/checkout@v2
       with:
@@ -51,10 +62,14 @@ jobs:
         ls -al ledger/*
         tar cvf ledger.tar.gz ledger/blocks 
         ls -al
-    - uses: actions/upload-artifact@v3
+
+    - name: Release
+      uses: ncipollo/release-action@v1
       with:
-        name: my-artifact
-        path: ledger.tar.gz
+        tag: "${{ steps.step0.outputs.tag }}-ledgerfile-${{ steps.version.outputs.version }}"
+        artifacts: "ledger.tar.gz"
+        token: ${{ secrets.GITHUB_TOKEN }}
+
     - name: Post Gvite Node
       run: |
         ./go-vite-nightly/gvite-cluster/shutdown
