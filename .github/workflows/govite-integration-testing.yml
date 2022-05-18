@@ -50,7 +50,7 @@ jobs:
         cd go-vite
         make test
         make gvite-linux
-        build/cmd/gvite/gvite-*-linux/gvite ../
+        cp build/cmd/gvite/gvite-*-linux/gvite ../
 
     - name: Fetch ledgerfile
       run: |   
