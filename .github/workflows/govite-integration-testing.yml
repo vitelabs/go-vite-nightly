@@ -61,19 +61,24 @@ jobs:
         tar xvf ledger.tar.gz
         cp ../go-vite-nightly/gvite-cluster/genesis.json ./ledger
         cp ../go-vite-nightly/gvite-cluster/node_config.json ./ledger
+        pwd
+        ls -al ledger/*
 
     - name: Run Docker
       run: |
+        pwd
         cd testing
         docker run -d -v `pwd`:/root/.gvite -p 127.0.0.1:48132:48132  --rm vitelabs/gvite-nightly:test --config /root/.gvite/node_config.json load --fromDir=/root/.gvite
+        sleep 10
         docker ps -a
+        ls -al ledger/*
 
-    - name: Check Result
-      run: |
-        pwd
-        cd go-vite-nightly/integration-testing
-        npm install
-        npx ts-node scripts/check_result.ts
+#     - name: Check Result
+#       run: |
+#         pwd
+#         cd go-vite-nightly/integration-testing
+#         npm install
+#         npx ts-node scripts/check_result.ts
 
        
       
