@@ -38,31 +38,39 @@ jobs:
         ref: '${{ steps.step0.outputs.branch }}'
         path: go-vite-nightly
 
-    - uses: actions/checkout@v2
-      with:
-        repository: 'vitelabs/vite-onestop'
-        ref: 'master'
-        path: vite-onestop
-
     - name: Set up Go
       uses: actions/setup-go@v2
       with:
         go-version: 1.16
 
-    # - name: Test && Build
-    #   run: |
-    #     pwd
-    #     cd go-vite
-    #     make test
-    #     make gvite-linux
-    #     cd ../
-    #     cp go-vite/build/cmd/gvite/gvite-*-linux/gvite .
-    #     ls -al
-
-    - name: Test
+    - name: Make && Docker Image
       run: |
-        docker --version
-        docker-compose --version
+        pwd
+        cd go-vite
+        make test
+        make gvite-linux
+        docker build -t vitelabs/gvite-nightly:test . -f docker/Dockerfile.preBuild
+
+    - name: Fetch ledgerfile
+      run: |   
+        pwd 
+        apt-get install jq -y
+        cd go-vite-nightly/integration-testing/scripts
+        wget `cat result.json | jq -r '.url'`
+        tar xvf ledger.tar.gz
+        cp ../../gvite-cluster/genesis.json ledger
+        cp ../../gvite-cluster/node_config.json ledger
+
+    - name: Run Docker
+      run: |
+        docker run -d -v ledger:/root/.gvite -p 127.0.0.1:48132:48132  --rm vitelabs/gvite-nightly:test --config /root/.gvite/node_config.json load --fromDir=/root/.gvite
+
+    - name: Check Result
+      run: |
+        pwd
+        cd go-vite-nightly/integration-testing
+        npm install
+        npx vuilder test scripts/check_result.ts
 
        
       
