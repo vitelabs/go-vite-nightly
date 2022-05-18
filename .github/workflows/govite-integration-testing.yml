@@ -6,11 +6,19 @@ on:
       branch:
         type: string
         required: true
+      gvite_nighty_branch:
+        description: 'run go-vite-nightly with which branch'
+        required: true 
+        default: 'master'
   workflow_dispatch:
     inputs:
       branch:
-        description: 'integration testing from'
+        description: 'testing go-vite with which branch'
         required: true
+        default: 'master'
+      gvite_nighty_branch:
+        description: 'run go-vite-nightly with which branch'
+        required: true 
         default: 'master'
 
 jobs:
@@ -22,7 +30,7 @@ jobs:
       id: step0
       run: |
         echo "::set-output name=branch::${{ (inputs || github.event.inputs).branch }}"
-        echo "::set-output name=tag::${{ (inputs || github.event.inputs).tag }}"
+        echo "::set-output name=gvite_nighty_branch::${{ (inputs || github.event.inputs).gvite_nighty_branch }}"
 
     - name: Echo branch and tag
       run: echo ${{ steps.step0.outputs.branch }} ${{ steps.step0.outputs.tag }}
@@ -36,7 +44,7 @@ jobs:
     - uses: actions/checkout@v2
       with:
         repository: 'vitelabs/go-vite-nightly'
-        ref: '${{ steps.step0.outputs.branch }}'
+        ref: '${{ steps.step0.outputs.gvite_nighty_branch }}'
         path: go-vite-nightly
 
     - name: Set up Go
