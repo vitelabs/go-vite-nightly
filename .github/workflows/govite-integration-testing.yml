@@ -69,7 +69,7 @@ jobs:
       run: |
         pwd
         cd testing
-        docker run -d -v `pwd`/ledger:/root/.gvite -p 127.0.0.1:48132:48132  --rm vitelabs/gvite-nightly:test --config /root/.gvite/node_config.json load --fromDir=/root/.gvite
+        docker run -v ./ledger:/root/.gvite -p 127.0.0.1:48132:48132  vitelabs/gvite-nightly:test --config /root/.gvite/node_config.json load --fromDir=/root/.gvite
         sleep 10
         docker ps -a
         ls -al ledger/*
