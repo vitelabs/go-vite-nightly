@@ -55,15 +55,17 @@ jobs:
       run: |   
         pwd 
         apt-get install jq -y
-        cd go-vite-nightly/integration-testing/scripts
-        wget `cat result.json | jq -r '.url'`
+        mkdir testing
+        cd testing
+        wget -c `cat ../go-vite-nightly/integration-testing/scripts/result.json | jq -r '.url'`
         tar xvf ledger.tar.gz
-        cp ../../gvite-cluster/genesis.json ledger
-        cp ../../gvite-cluster/node_config.json ledger
+        cp ../gvite-cluster/genesis.json ./ledger
+        cp ../gvite-cluster/node_config.json ./ledger
 
     - name: Run Docker
       run: |
-        docker run -d -v ledger:/root/.gvite -p 127.0.0.1:48132:48132  --rm vitelabs/gvite-nightly:test --config /root/.gvite/node_config.json load --fromDir=/root/.gvite
+        cd testing
+        docker run -d -v `pwd`/ledger:/root/.gvite -p 127.0.0.1:48132:48132  --rm vitelabs/gvite-nightly:test --config /root/.gvite/node_config.json load --fromDir=/root/.gvite
 
     - name: Check Result
       run: |
