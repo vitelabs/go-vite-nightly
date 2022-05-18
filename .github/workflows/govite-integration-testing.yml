@@ -43,7 +43,6 @@ jobs:
 
     - uses: actions/checkout@v2
       with:
-        repository: 'vitelabs/go-vite-nightly'
         ref: '${{ steps.step0.outputs.gvite_nighty_branch }}'
         path: go-vite-nightly
 
