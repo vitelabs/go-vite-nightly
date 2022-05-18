@@ -1,0 +1,271 @@
+{
+  "GenesisAccountAddress": "vite_ab24ef68b84e642c0ddca06beec81c9acb1977bbd7da27a87a",
+  "UpgradeCfg": {
+    "Level": "custom",
+    "Points": {
+      "SeedFork": {
+        "Height": 1,
+        "Version": 1
+      },
+      "DexFork": {
+        "Height": 1,
+        "Version": 2
+      },
+      "DexFeeFork": {
+        "Height": 1,
+        "Version": 3
+      },
+      "StemFork": {
+        "Height": 1,
+        "Version": 4
+      },
+      "LeafFork": {
+        "Height": 1,
+        "Version": 5
+      },
+      "EarthFork": {
+        "Height": 1,
+        "Version": 6
+      },
+      "DexMiningFork": {
+        "Height": 1,
+        "Version": 7
+      },
+      "DexRobotFork": {
+        "Height": 1,
+        "Version": 8
+      },
+      "DexStableMarketFork": {
+        "Height": 1,
+        "Version": 9
+      },
+      "Version10": {
+        "Height": 1,
+        "Version": 10
+      }
+    }
+  },
+  "GovernanceInfo": {
+    "ConsensusGroupInfoMap": {
+      "00000000000000000001": {
+        "NodeCount": 3,
+        "Interval": 1,
+        "PerCount": 3,
+        "RandCount": 2,
+        "RandRank": 100,
+        "Repeat": 1,
+        "CheckLevel": 0,
+        "CountingTokenId": "tti_5649544520544f4b454e6e40",
+        "RegisterConditionId": 1,
+        "RegisterConditionParam": {
+          "StakeAmount": 100000000000000000000000,
+          "StakeHeight": 1,
+          "StakeToken": "tti_5649544520544f4b454e6e40"
+        },
+        "VoteConditionId": 1,
+        "VoteConditionParam": {},
+        "Owner": "vite_ab24ef68b84e642c0ddca06beec81c9acb1977bbd7da27a87a",
+        "StakeAmount": 0,
+        "ExpirationHeight": 1
+      },
+      "00000000000000000002": {
+        "NodeCount": 3,
+        "Interval": 3,
+        "PerCount": 1,
+        "RandCount": 2,
+        "RandRank": 100,
+        "Repeat": 48,
+        "CheckLevel": 1,
+        "CountingTokenId": "tti_5649544520544f4b454e6e40",
+        "RegisterConditionId": 1,
+        "RegisterConditionParam": {
+          "StakeAmount": 100000000000000000000000,
+          "StakeHeight": 1,
+          "StakeToken": "tti_5649544520544f4b454e6e40"
+        },
+        "VoteConditionId": 1,
+        "VoteConditionParam": {},
+        "Owner": "vite_ab24ef68b84e642c0ddca06beec81c9acb1977bbd7da27a87a",
+        "StakeAmount": 0,
+        "ExpirationHeight": 1
+      }
+    },
+    "RegistrationInfoMap": {
+      "00000000000000000001": {
+        "s1": {
+          "BlockProducingAddress": "vite_360232b0378111b122685a15e612143dc9a89cfa7e803f4b5a",
+          "StakeAddress": "vite_360232b0378111b122685a15e612143dc9a89cfa7e803f4b5a",
+          "Amount": 100000000000000000000000,
+          "ExpirationHeight": 7776000,
+          "RewardTime": 1,
+          "RevokeTime": 0,
+          "HistoryAddressList": [
+            "vite_360232b0378111b122685a15e612143dc9a89cfa7e803f4b5a"
+          ]
+        },
+        "s2": {
+          "BlockProducingAddress": "vite_ce18b99b46c70c8e6bf34177d0c5db956a8c3ea7040a1c1e25",
+          "StakeAddress": "vite_ce18b99b46c70c8e6bf34177d0c5db956a8c3ea7040a1c1e25",
+          "Amount": 100000000000000000000000,
+          "ExpirationHeight": 7776000,
+          "RewardTime": 1,
+          "RevokeTime": 0,
+          "HistoryAddressList": [
+            "vite_ce18b99b46c70c8e6bf34177d0c5db956a8c3ea7040a1c1e25"
+          ]
+        },
+        "s3": {
+          "BlockProducingAddress": "vite_40996a2ba285ad38930e09a43ee1bd0d84f756f65318e8073a",
+          "StakeAddress": "vite_40996a2ba285ad38930e09a43ee1bd0d84f756f65318e8073a",
+          "Amount": 100000000000000000000000,
+          "ExpirationHeight": 7776000,
+          "RewardTime": 1,
+          "RevokeTime": 0,
+          "HistoryAddressList": [
+            "vite_40996a2ba285ad38930e09a43ee1bd0d84f756f65318e8073a"
+          ]
+        }
+      }
+    }
+  },
+  "AssetInfo": {
+    "TokenInfoMap": {
+      "tti_5649544520544f4b454e6e40": {
+        "TokenName": "Vite Token",
+        "TokenSymbol": "VITE",
+        "TotalSupply": 1000000000000000000000000000,
+        "Decimals": 18,
+        "Owner": "vite_962eab5a19e51fe36506308f6fcf337876139bd5fee3048c46",
+        "MaxSupply": 100000000000000000000000000000,
+        "IsOwnerBurnOnly": false,
+        "IsReIssuable": true
+      },
+      "tti_564954455820434f494e69b5": {
+        "TokenName": "ViteX Coin",
+        "TokenSymbol": "VX",
+        "TotalSupply": 100000000000000000000000000,
+        "Decimals": 18,
+        "Owner": "vite_962eab5a19e51fe36506308f6fcf337876139bd5fee3048c46",
+        "MaxSupply": 0,
+        "IsOwnerBurnOnly": false,
+        "IsReIssuable": false
+      },
+      "tti_322862b3f8edae3b02b110b1": {
+        "TokenName": "BTC Token",
+        "TokenSymbol": "BTC",
+        "TotalSupply": 2100000000000000,
+        "Decimals": 8,
+        "Owner": "vite_962eab5a19e51fe36506308f6fcf337876139bd5fee3048c46",
+        "MaxSupply": 0,
+        "IsOwnerBurnOnly": true,
+        "IsReIssuable": false
+      },
+      "tti_06822f8d096ecdf9356b666c": {
+        "TokenName": "ETH Token",
+        "TokenSymbol": "ETH",
+        "TotalSupply": 72000000000000000000000000,
+        "Decimals": 18,
+        "Owner": "vite_962eab5a19e51fe36506308f6fcf337876139bd5fee3048c46",
+        "MaxSupply": 0,
+        "IsOwnerBurnOnly": true,
+        "IsReIssuable": false
+      },
+      "tti_973afc9ffd18c4679de42e93": {
+        "TokenName": "USDT Token",
+        "TokenSymbol": "USDT",
+        "TotalSupply": 10000000000000000,
+        "Decimals": 6,
+        "Owner": "vite_962eab5a19e51fe36506308f6fcf337876139bd5fee3048c46",
+        "MaxSupply": 0,
+        "IsOwnerBurnOnly": true,
+        "IsReIssuable": false
+      },
+      "tti_2736f320d7ed1c2871af1d9d": {
+        "TokenName": "VTT Token",
+        "TokenSymbol": "VTT",
+        "TotalSupply": 1000000000000000000000000000,
+        "Decimals": 18,
+        "Owner": "vite_962eab5a19e51fe36506308f6fcf337876139bd5fee3048c46",
+        "MaxSupply": 0,
+        "IsOwnerBurnOnly": true,
+        "IsReIssuable": false
+      }
+    },
+    "LogList": [
+      {
+        "Data": "",
+        "Topics": [
+          "3f9dcc00d5e929040142c3fb2b67a3be1b0e91e98dac18d5bc2b7817a4cfecb6",
+          "000000000000000000000000000000000000000000005649544520544f4b454e"
+        ]
+      },
+      {
+        "Data": "",
+        "Topics": [
+          "3f9dcc00d5e929040142c3fb2b67a3be1b0e91e98dac18d5bc2b7817a4cfecb6",
+          "000000000000000000000000000000000000000000005649544520544f4b454e"
+        ]
+      },
+      {
+        "Data": "",
+        "Topics": [
+          "3f9dcc00d5e929040142c3fb2b67a3be1b0e91e98dac18d5bc2b7817a4cfecb6",
+          "00000000000000000000000000000000000000000000322862b3f8edae3b02b1"
+        ]
+      },
+      {
+        "Data": "",
+        "Topics": [
+          "3f9dcc00d5e929040142c3fb2b67a3be1b0e91e98dac18d5bc2b7817a4cfecb6",
+          "0000000000000000000000000000000000000000000006822f8d096ecdf9356b"
+        ]
+      },
+      {
+        "Data": "",
+        "Topics": [
+          "3f9dcc00d5e929040142c3fb2b67a3be1b0e91e98dac18d5bc2b7817a4cfecb6",
+          "00000000000000000000000000000000000000000000973afc9ffd18c4679de4"
+        ]
+      },
+      {
+        "Data": "",
+        "Topics": [
+          "3f9dcc00d5e929040142c3fb2b67a3be1b0e91e98dac18d5bc2b7817a4cfecb6",
+          "000000000000000000000000000000000000000000002736f320d7ed1c2871af"
+        ]
+      }
+    ]
+  },
+  "QuotaInfo": {
+    "StakeBeneficialMap": {
+      "vite_962eab5a19e51fe36506308f6fcf337876139bd5fee3048c46": 10000000000000000000000,
+      "vite_0000000000000000000000000000000000000006e82b8ba657": 1000000000000000000000000,
+      "vite_48c0f4a25f1942435aa93669a82ac0eae906e324c43576f787": 10000000000000000000000
+    }
+  },
+  "DexFundInfo": {
+    "Owner": "vite_962eab5a19e51fe36506308f6fcf337876139bd5fee3048c46"
+  },
+  "AccountBalanceMap": {
+    "vite_ab24ef68b84e642c0ddca06beec81c9acb1977bbd7da27a87a": {
+      "tti_5649544520544f4b454e6e40": 899999000000000000000000000
+    },
+    "vite_56fd05b23ff26cd7b0a40957fb77bde60c9fd6ebc35f809c23": {
+      "tti_5649544520544f4b454e6e40": 100000000000000000000000000
+    },
+    "vite_728b33851beb76a3fcce8c177c0cf16d180e9727d624834659": {
+      "tti_5649544520544f4b454e6e40": 100000000000000000000000000
+    },
+    "vite_962eab5a19e51fe36506308f6fcf337876139bd5fee3048c46": {
+      "tti_5649544520544f4b454e6e40": 100000000000000000000000000,
+      "tti_322862b3f8edae3b02b110b1": 10000000000,
+      "tti_06822f8d096ecdf9356b666c": 100000000000000000000,
+      "tti_973afc9ffd18c4679de42e93": 100000000000,
+      "tti_2736f320d7ed1c2871af1d9d": 1000000000000000000000000000,
+      "tti_564954455820434f494e69b5": 100000000000000000000000000
+    },
+    "vite_48c0f4a25f1942435aa93669a82ac0eae906e324c43576f787": {
+      "tti_5649544520544f4b454e6e40": 1
+    }
+  }
+}

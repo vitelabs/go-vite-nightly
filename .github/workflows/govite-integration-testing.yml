@@ -50,31 +50,28 @@ jobs:
         cd go-vite
         make test
         make gvite-linux
-        cp build/cmd/gvite/gvite-*-linux/gvite ../
+        cp build/cmd/gvite/gvite-*-linux/gvite ../gvite-testing
 
-    - name: Fetch ledgerfile
+    - name: Fetch gvite ledger file
       run: |   
         pwd 
+        cd gvite-testing
         sudo apt-get install jq -y
-        mkdir testing
-        cd testing
         wget -c `cat ../go-vite-nightly/integration-testing/scripts/result.json | jq -r '.url'`
-        tar xvf ledger.tar.gz
-        cp ../go-vite-nightly/gvite-cluster/genesis.json ./
-        cp ../go-vite-nightly/gvite-cluster/node_config.json ./
-        mv ../gvite .
+        tar xvf ledger.tar.gz && rm ledger.tar.gz
         pwd
         ls -al *
+        docker build -t vitelabs/gvite-nightly:test .
 
-        
-
-    - name: Run Gvite
+    - name: Run Docker
       run: |
         pwd
         cd testing
-        ./gvite --config ./node_config.json load --fromDir=./ledger
+        ls -al /home/runner/work/go-vite-nightly/go-vite-nightly/testing/ledger/*
+        docker run -d -p 127.0.0.1:48132:48132  vitelabs/gvite-nightly:test --config /root/node_config.json load --fromDir=/root/ledger
         sleep 10
-        ls -al *
+        docker ps -a
+        ls -al ledger/*
 
 #     - name: Check Result
 #       run: |

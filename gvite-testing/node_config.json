@@ -1,7 +1,7 @@
 {
   "NetID": 9,
   "Identity": "s1",
-  "GenesisFile": "/root/.gvite/genesis.json",
+  "GenesisFile": "/root/genesis.json",
   "MaxPeers": 10,
   "MaxPassivePeersRatio": 0,
   "MaxPendingPeers": 10,
