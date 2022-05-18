@@ -4,6 +4,10 @@ import config from "./vite.config.json";
 import resultMeta from "./result.json";
 
 async function run(): Promise<void> {
+  await new Promise((resolve) => {
+    setTimeout(resolve, 10000); //10s
+  });
+
   const provider = vuilder.newProvider(config.networks.local.http);
   console.log('current snapshotChainHeight', await provider.request("ledger_getSnapshotChainHeight"));
   const deployer = vuilder.newAccount(config.networks.local.mnemonic, 0, provider);
