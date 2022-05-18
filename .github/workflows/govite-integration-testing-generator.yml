@@ -14,9 +14,11 @@ on:
       branch:
         description: 'integration testing from'
         required: true
+        default: 'master'
       tag:
-        description: 'tag prefix'
+        description: 'govite tag prefix'
         required: true
+        default: 'v2.11.0'
 
 jobs:
   build:

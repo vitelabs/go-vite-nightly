@@ -3,32 +3,37 @@ const vuilder = require("@vite/vuilder");
 import config from "./vite.config.json";
 import resultMeta from "./result.json";
 
-let provider: any;
-let deployer: any;
+async function run(): Promise<void> {
+  const provider = vuilder.newProvider(config.networks.local.http);
+  console.log('current snapshotChainHeight', await provider.request("ledger_getSnapshotChainHeight"));
+  const deployer = vuilder.newAccount(config.networks.local.mnemonic, 0, provider);
+  console.log('deployer', deployer.address);
+  const balance = await deployer.balance();
+  console.log(balance.toString());
 
-describe("test HelloWorld", () => {
-  before(async function () {
-    provider = vuilder.newProvider(config.networks.local.http);
-    console.log(await provider.request("ledger_getSnapshotChainHeight"));
-    deployer = vuilder.newAccount(config.networks.local.mnemonic, 0, provider);
-    console.log("deployer", deployer.address);
-
-    const balance = await deployer.balance();
-    console.log(balance.toString());
-  });
-
-  it("test set function", async () => {
-    while (true) {
-      const currentHeight = await provider.request(
-        "ledger_getSnapshotChainHeight"
-      );
-      await new Promise((resolve) => {
-        setTimeout(resolve, 1000);
-      });
-      if (+currentHeight >= resultMeta.height) {
-        console.log("result: ", JSON.stringify({ success: true }));
-        break;
-      }
+  let cnt = 0;
+  while (cnt < 180) {
+    const currentHeight = await provider.request(
+      "ledger_getSnapshotChainHeight"
+    );
+    await new Promise((resolve) => {
+      setTimeout(resolve, 1000);
+    });
+    if (+currentHeight >= resultMeta.height) {
+      console.log("result: ", JSON.stringify({ success: true }));
+      break;
     }
-  });
+
+    cnt++;
+  }
+
+  if (cnt >= 180) {
+    console.log("result: ", JSON.stringify({ success: false }));
+  }
+
+  return;
+}
+
+run().then(() => {
+  console.log("done");
 });
