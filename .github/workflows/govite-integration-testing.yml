@@ -68,22 +68,22 @@ jobs:
         tar xvf ledger.tar.gz && rm ledger.tar.gz
         pwd
         ls -al *
-        docker build -t vitelabs/gvite-nightly:test .
 
     - name: Run Docker
       run: |
         pwd
-        docker run -p 127.0.0.1:48132:48132  vitelabs/gvite-nightly:test --config /root/node_config.json load --fromDir=/root/ledger
+        cd go-vite-nightly/gvite-testing/
+        docker-compose -f docker-compose.yml up --build -d
         sleep 10
         docker ps -a
-        ls -al go-vite-nightly/gvite-testing/*
+        ls -al
 
-#     - name: Check Result
-#       run: |
-#         pwd
-#         cd go-vite-nightly/integration-testing
-#         npm install
-#         npx ts-node scripts/check_result.ts
+    - name: Check Result
+      run: |
+        pwd
+        cd go-vite-nightly/integration-testing
+        npm install
+        npx ts-node scripts/check_result.ts
 
        
       
