@@ -66,6 +66,7 @@ jobs:
       run: |
         cd testing
         docker run -d -v `pwd`:/root/.gvite -p 127.0.0.1:48132:48132  --rm vitelabs/gvite-nightly:test --config /root/.gvite/node_config.json load --fromDir=/root/.gvite
+        docker ps -a
 
     - name: Check Result
       run: |
