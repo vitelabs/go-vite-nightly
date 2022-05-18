@@ -50,7 +50,7 @@ jobs:
         cd go-vite
         make test
         make gvite-linux
-        docker build -t vitelabs/gvite-nightly:test . -f docker/Dockerfile.preBuild
+        build/cmd/gvite/gvite-*-linux/gvite ../
 
     - name: Fetch ledgerfile
       run: |   
@@ -60,20 +60,21 @@ jobs:
         cd testing
         wget -c `cat ../go-vite-nightly/integration-testing/scripts/result.json | jq -r '.url'`
         tar xvf ledger.tar.gz
-        cp ../go-vite-nightly/gvite-cluster/genesis.json ./ledger
-        cp ../go-vite-nightly/gvite-cluster/node_config.json ./ledger
+        cp ../go-vite-nightly/gvite-cluster/genesis.json ./
+        cp ../go-vite-nightly/gvite-cluster/node_config.json ./
+        mv ../gvite .
         pwd
-        ls -al ledger/*
+        ls -al *
 
-    - name: Run Docker
+        
+
+    - name: Run Gvite
       run: |
         pwd
         cd testing
-        ls -al /home/runner/work/go-vite-nightly/go-vite-nightly/testing/ledger/*
-        docker run -v /home/runner/work/go-vite-nightly/go-vite-nightly/testing/ledger:/root/.gvite -p 127.0.0.1:48132:48132  vitelabs/gvite-nightly:test --config /root/.gvite/node_config.json load --fromDir=/root/.gvite
+        ./gvite --config ./node_config.json load --fromDir=./ledger
         sleep 10
-        docker ps -a
-        ls -al ledger/*
+        ls -al *
 
 #     - name: Check Result
 #       run: |

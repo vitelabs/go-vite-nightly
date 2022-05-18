@@ -1,7 +1,7 @@
 {
   "NetID": 9,
   "Identity": "s1",
-  "GenesisFile": "/root/.gvite/genesis.json",
+  "GenesisFile": "./genesis.json",
   "MaxPeers": 10,
   "MaxPassivePeersRatio": 0,
   "MaxPendingPeers": 10,
@@ -17,8 +17,8 @@
   "WSPort": 41420,
   "Miner": false,
   "Topology": [],
-  "DataDir": "/root/.gvite",
-  "KeyStoreDir": "/root/.gvite",
+  "DataDir": "./.gvite",
+  "KeyStoreDir": "./.gvite",
   "PublicModules": [
     "ledger",
     "dashboard",
