@@ -54,7 +54,7 @@ jobs:
     - name: Fetch ledgerfile
       run: |   
         pwd 
-        apt-get install jq -y
+        sudo apt-get install jq -y
         mkdir testing
         cd testing
         wget -c `cat ../go-vite-nightly/integration-testing/scripts/result.json | jq -r '.url'`
