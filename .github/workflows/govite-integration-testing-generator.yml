@@ -49,7 +49,12 @@ jobs:
         mkdir ledger
         docker cp gvite-cluster_s1_1:/root/.gvite/node1/devdata/ledger/blocks ledger
         ls -al ledger/*
-        
+        tar cvf ledger.tar.gz ledger/blocks 
+        ls -al
+    - uses: actions/upload-artifact@v3
+      with:
+        name: my-artifact
+        path: ledger.tar.gz
     - name: Post Gvite Node
       run: |
         ./go-vite-nightly/gvite-cluster/shutdown
