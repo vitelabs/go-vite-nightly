@@ -7,8 +7,8 @@ on:
         type: string
         required: true
       gvite_nighty_branch:
-        description: 'run go-vite-nightly with which branch'
-        required: true 
+        type: string
+        required: false
         default: 'master'
   workflow_dispatch:
     inputs:
