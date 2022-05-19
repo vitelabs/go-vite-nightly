@@ -1,5 +1,5 @@
 import { expect } from "chai";
-const vuilder = require("@vite/vuilder");
+import vuilder from "@vite/vuilder";
 import config from "./vite.config.json";
 import resultMeta from "./result.json";
 
@@ -19,6 +19,7 @@ async function run(): Promise<void> {
   console.log(balance.toString());
 
   let cnt = 0;
+  let result = false;
   while (cnt < 180) {
     const currentHeight = await provider.request(
       "ledger_getSnapshotChainHeight"
@@ -31,16 +32,14 @@ async function run(): Promise<void> {
     );
     if (+currentHeight >= resultMeta.height) {
       console.log("result: ", JSON.stringify({ success: true }));
+      result = true;
       break;
     }
 
     cnt++;
   }
 
-  if (cnt >= 180) {
-    console.log("result: ", JSON.stringify({ success: false }));
-  }
-
+  expect(result).to.be.equal(true);
   return;
 }
 
