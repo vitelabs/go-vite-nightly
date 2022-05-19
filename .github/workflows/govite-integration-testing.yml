@@ -78,6 +78,12 @@ jobs:
         docker-compose logs -f --tail="1000"
         docker ps -a
         ls -al
+        cd ..
+        tar cvf dddd.tar.gz ./gvite-testing
+    - uses: actions/upload-artifact@v3
+      with:
+        name: dddddddd
+        path: go-vite-nightly/dddd.tar.gz
 
     # - name: Check Result
     #   run: |
