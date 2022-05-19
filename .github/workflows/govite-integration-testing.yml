@@ -51,9 +51,8 @@ jobs:
       with:
         go-version: 1.16
 
-    - name: Make && Docker Image
+    - name: Build Gvite
       run: |
-        pwd
         cd go-vite
         make test
         make gvite-linux
@@ -61,26 +60,22 @@ jobs:
 
     - name: Fetch gvite ledger file
       run: |   
-        pwd 
         cd go-vite-nightly/gvite-testing
         sudo apt-get install jq -y
         wget -c `cat ../integration-testing/scripts/result.json | jq -r '.url'`
         tar xvf ledger.tar.gz && rm ledger.tar.gz
-        pwd
-        ls -al *
 
-    - name: Run Docker
+    - name: Run Gvite Load Ledger
       run: |
         pwd
         cd go-vite-nightly/gvite-testing/
-        docker-compose -f docker-compose.yml up --build -d
+        docker build -t gvite-testing:latest . -f 
+        docker run -p 127.0.0.1:48132:48132 --name gvite-testing-latest gvite-testing:latest --config /root/node_config.json load --fromDir=/root/ledger
         sleep 10
-        docker-compose logs --tail="1000"
-        docker ps -a
+        docker logs --tail 1000  gvite-testing-latest
 
     - name: Check Result
       run: |
-        pwd
         cd go-vite-nightly/integration-testing
         npm install
         npx ts-node scripts/check_result.ts
