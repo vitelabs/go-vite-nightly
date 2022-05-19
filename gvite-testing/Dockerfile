@@ -1,5 +1,15 @@
 FROM alpine:3.8
 
+RUN apk update \
+	&& apk upgrade \
+	&& apk add --no-cache bash \
+	bash-doc \
+	bash-completion \
+	&& rm -rf /var/cache/apk/* \
+	&& /bin/bash
+
+RUN apk add --no-cache ca-certificates
+
 WORKDIR /root
 
 COPY ./gvite .
