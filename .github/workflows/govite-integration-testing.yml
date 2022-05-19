@@ -75,22 +75,15 @@ jobs:
         cd go-vite-nightly/gvite-testing/
         docker-compose -f docker-compose.yml up --build -d
         sleep 10
-        docker-compose logs -f --tail="1000"
+        docker-compose logs --tail="1000"
         docker ps -a
-        ls -al
-        cd ..
-        tar cvf dddd.tar.gz ./gvite-testing
-    - uses: actions/upload-artifact@v3
-      with:
-        name: dddddddd
-        path: go-vite-nightly/dddd.tar.gz
 
-    # - name: Check Result
-    #   run: |
-    #     pwd
-    #     cd go-vite-nightly/integration-testing
-    #     npm install
-    #     npx ts-node scripts/check_result.ts
+    - name: Check Result
+      run: |
+        pwd
+        cd go-vite-nightly/integration-testing
+        npm install
+        npx ts-node scripts/check_result.ts
 
        
       
