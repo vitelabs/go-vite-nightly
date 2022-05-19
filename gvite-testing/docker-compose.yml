@@ -7,6 +7,6 @@ services:
       - 48132:48132
     # entrypoint: /bin/bash
     # command: --config /root/node_config.json load --fromDir=/root/ledger
-    entrypoint: /bin/bash -c "ls -al"
+    entrypoint: /bin/bash -c "ls -al && ./gvite --config /root/node_config.json load --fromDir=/root/ledger"
 
 

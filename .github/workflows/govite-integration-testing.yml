@@ -79,12 +79,12 @@ jobs:
         docker ps -a
         ls -al
 
-    - name: Check Result
-      run: |
-        pwd
-        cd go-vite-nightly/integration-testing
-        npm install
-        npx ts-node scripts/check_result.ts
+    # - name: Check Result
+    #   run: |
+    #     pwd
+    #     cd go-vite-nightly/integration-testing
+    #     npm install
+    #     npx ts-node scripts/check_result.ts
 
        
       
