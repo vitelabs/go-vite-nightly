@@ -6,8 +6,8 @@ services:
     ports:
       - 48132:48132
     # entrypoint: /bin/bash
-    # command: --config /root/node_config.json load --fromDir=/root/ledger
-    entrypoint: /bin/bash -c "ls -al && ./gvite --config /root/node_config.json load --fromDir=/root/ledger"
+    command: --config /root/node_config.json load --fromDir=/root/ledger
+    # entrypoint: /bin/bash -c "ls -al && ./gvite --config /root/node_config.json load --fromDir=/root/ledger"
     # entrypoint: /bin/bash -c "sleep 100000000"
 
 
