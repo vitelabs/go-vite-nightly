@@ -70,7 +70,7 @@ jobs:
         pwd
         cd go-vite-nightly/gvite-testing/
         docker build -t gvite-testing:latest . 
-        docker run -p 127.0.0.1:48132:48132 --name gvite-testing-latest gvite-testing:latest --config /root/node_config.json load --fromDir=/root/ledger
+        docker run -d -p 127.0.0.1:48132:48132 --name gvite-testing-latest gvite-testing:latest --config /root/node_config.json load --fromDir=/root/ledger
         sleep 10
         docker logs --tail 1000  gvite-testing-latest
 
