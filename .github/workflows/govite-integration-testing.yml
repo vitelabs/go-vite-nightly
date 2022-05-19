@@ -6,11 +6,20 @@ on:
       branch:
         type: string
         required: true
+      gvite_nighty_branch:
+        type: string
+        required: false
+        default: 'master'
   workflow_dispatch:
     inputs:
       branch:
-        description: 'integration testing from'
+        description: 'testing go-vite with which branch'
         required: true
+        default: 'master'
+      gvite_nighty_branch:
+        description: 'run go-vite-nightly with which branch'
+        required: true 
+        default: 'master'
 
 jobs:
   build:
@@ -21,7 +30,7 @@ jobs:
       id: step0
       run: |
         echo "::set-output name=branch::${{ (inputs || github.event.inputs).branch }}"
-        echo "::set-output name=tag::${{ (inputs || github.event.inputs).tag }}"
+        echo "::set-output name=gvite_nighty_branch::${{ (inputs || github.event.inputs).gvite_nighty_branch }}"
 
     - name: Echo branch and tag
       run: echo ${{ steps.step0.outputs.branch }} ${{ steps.step0.outputs.tag }}
@@ -34,8 +43,7 @@ jobs:
 
     - uses: actions/checkout@v2
       with:
-        repository: 'vitelabs/go-vite-nightly'
-        ref: '${{ steps.step0.outputs.branch }}'
+        ref: '${{ steps.step0.outputs.gvite_nighty_branch }}'
         path: go-vite-nightly
 
     - name: Set up Go
@@ -43,34 +51,31 @@ jobs:
       with:
         go-version: 1.16
 
-    - name: Make && Docker Image
+    - name: Build Gvite
       run: |
-        pwd
         cd go-vite
         make test
         make gvite-linux
-        docker build -t vitelabs/gvite-nightly:test . -f docker/Dockerfile.preBuild
+        cp build/cmd/gvite/gvite-*-linux/gvite ../go-vite-nightly/gvite-testing
 
-    - name: Fetch ledgerfile
+    - name: Fetch gvite ledger file
       run: |   
-        pwd 
+        cd go-vite-nightly/gvite-testing
         sudo apt-get install jq -y
-        mkdir testing
-        cd testing
-        wget -c `cat ../go-vite-nightly/integration-testing/scripts/result.json | jq -r '.url'`
-        tar xvf ledger.tar.gz
-        cp ../go-vite-nightly/gvite-cluster/genesis.json ./ledger
-        cp ../go-vite-nightly/gvite-cluster/node_config.json ./ledger
+        wget -c `cat ../integration-testing/scripts/result.json | jq -r '.url'`
+        tar xvf ledger.tar.gz && rm ledger.tar.gz
 
-    - name: Run Docker
+    - name: Run Gvite Load Ledger
       run: |
-        cd testing
-        docker run -d -v `pwd`:/root/.gvite -p 127.0.0.1:48132:48132  --rm vitelabs/gvite-nightly:test --config /root/.gvite/node_config.json load --fromDir=/root/.gvite
-        docker ps -a
+        pwd
+        cd go-vite-nightly/gvite-testing/
+        docker build -t gvite-testing:latest . 
+        docker run -d -p 127.0.0.1:48132:48132 --name gvite-testing-latest gvite-testing:latest --config /root/node_config.json load --fromDir=/root/ledger
+        sleep 10
+        docker logs --tail 1000  gvite-testing-latest
 
     - name: Check Result
       run: |
-        pwd
         cd go-vite-nightly/integration-testing
         npm install
         npx ts-node scripts/check_result.ts
