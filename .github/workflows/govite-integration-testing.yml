@@ -73,7 +73,7 @@ jobs:
       run: |
         pwd
         cd go-vite-nightly/gvite-testing/
-        docker-compose -f docker-compose.yml up --build -d
+        docker-compose -f docker-compose.yml up --build
         sleep 10
         docker ps -a
         ls -al

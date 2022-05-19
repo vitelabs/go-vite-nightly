@@ -7,6 +7,6 @@ services:
       - 48132:48132
     # entrypoint: /bin/bash
     command: --config /root/node_config.json load --fromDir=/root/ledger
-    # entrypoint: /bin/sh -c "ls -al"
+    # entrypoint: /bin/sh -c "sleep 1000000000000"
 
 
