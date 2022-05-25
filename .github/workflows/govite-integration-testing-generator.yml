@@ -71,6 +71,7 @@ jobs:
         tag: "${{ steps.step0.outputs.tag }}-ledgerfile-${{ steps.version.outputs.version }}"
         artifacts: "ledger.tar.gz"
         token: ${{ secrets.GITHUB_TOKEN }}
+        prerelease: true
 
     - name: Post Gvite Node
       run: |
