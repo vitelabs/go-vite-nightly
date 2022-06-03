@@ -46,18 +46,19 @@ describe("test version11 upgrade", () => {
   });
 
   it("test Fund/placeOrder orderType ", async () => {
-    const orderType = "1"
+    const orderSide = false // true:buy false:sell 
+    const orderType = "1" // 0:limit 1:market 2:postOnly 3:FillOrKill 4:ImmediateOrCancel
 
     // before upgrade
     await provider.request("virtual_addUpgrade", 11, 1000000);
-    try{
+    try {
       await fundContract.call(
         "PlaceOrder",
-        [tradeToken, quoteToken, "0", orderType, "2.974", "60000000000000000000"],
+        [tradeToken, quoteToken, orderSide, orderType, "2.974", "60000000000000000000"],
         { amount: "0" }
       );
       assert.fail("fail message")
-    }catch(err){
+    } catch (err) {
       expect((err as Error).message).to.be.equal("revert, methodName: PlaceOrder")
     }
 
@@ -65,7 +66,7 @@ describe("test version11 upgrade", () => {
     await provider.request("virtual_addUpgrade", 11, 1);
     await fundContract.call(
       "PlaceOrder",
-      [tradeToken, quoteToken, "0", orderType, "2.974", "60000000000000000000"],
+      [tradeToken, quoteToken, orderSide, orderType, "20.974", "60000000000000000000"],
       { amount: "0" }
     );
   });
@@ -73,7 +74,7 @@ describe("test version11 upgrade", () => {
   it("test Trade/clearExpiredOrders ", async () => {
     // before upgrade
     await provider.request("virtual_addUpgrade", 11, 1000000);
-    let orderId = "00000601000000000006e44c28000062984ffe000010"; //22bytes 
+    let orderId = "000002010000000002e2c6ec8c00006299757e000000";
     const dataHex = Buffer.from(orderId, 'binary').toString('hex');
     console.log("the data length:", dataHex.length);
     try {
