@@ -35,7 +35,7 @@ describe("test version11 upgrade", () => {
   it("test Fund/Transfer ", async () => {
     // const dd = await provider.request("virtual_mineBatch", 10);
     // before upgrade
-    const addr = "vite_3345524abf6bbe1809449224b5972c41790b6cf2e22fcb5caf"
+    const addr = "vite_b97a29a01b6b98109cb08f017045435ffe847a312b951bba70"
 
     await provider.request("virtual_addUpgrade", 11, 1000000);
     try {
