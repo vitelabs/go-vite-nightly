@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import vuilder from "@vite/vuilder";
+import * as vuilder from "@vite/vuilder";
 import config from "./vite.config.json";
 import resultMeta from "./result.json";
 
