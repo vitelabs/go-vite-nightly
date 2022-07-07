@@ -72,9 +72,9 @@
         "NodeCount": 3,
         "Interval": 3,
         "PerCount": 1,
-        "RandCount": 2,
+        "RandCount": 0,
         "RandRank": 100,
-        "Repeat": 48,
+        "Repeat": 1,
         "CheckLevel": 1,
         "CountingTokenId": "tti_5649544520544f4b454e6e40",
         "RegisterConditionId": 1,
@@ -240,7 +240,8 @@
     "StakeBeneficialMap": {
       "vite_962eab5a19e51fe36506308f6fcf337876139bd5fee3048c46": 10000000000000000000000,
       "vite_0000000000000000000000000000000000000006e82b8ba657": 1000000000000000000000000,
-      "vite_48c0f4a25f1942435aa93669a82ac0eae906e324c43576f787": 10000000000000000000000
+      "vite_48c0f4a25f1942435aa93669a82ac0eae906e324c43576f787": 10000000000000000000000,
+      "vite_c8fc538a4fcece26f34e73ff2ce286adf76cec2e4af3f3ba8d": 1000000000000000000000000
     }
   },
   "DexFundInfo": {
@@ -266,6 +267,9 @@
     },
     "vite_48c0f4a25f1942435aa93669a82ac0eae906e324c43576f787": {
       "tti_5649544520544f4b454e6e40": 1
+    },
+    "vite_c8fc538a4fcece26f34e73ff2ce286adf76cec2e4af3f3ba8d":{
+      "tti_5649544520544f4b454e6e40": 100000000000000000000000000
     }
   }
 }
