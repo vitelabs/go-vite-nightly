@@ -1,0 +1,31 @@
+// SPDX-License-Identifier: GPL-3.0
+// Demostrate how to call a contract and send tokens at the same time.
+
+pragma soliditypp >=0.8.0;
+
+contract A {
+   event Received(uint indexed topic, uint data, address sender, vitetoken token, uint amount);
+
+   function f(uint a, uint t) external payable returns(uint) {
+      address sender = msg.sender;
+      vitetoken token = msg.token;
+      uint amount = msg.value;
+
+      emit Received(t, a, sender, token, amount);
+      return a + 1;
+   }
+}
+
+contract B {
+   A a;
+   uint public b;
+
+   constructor (address payable addr) payable {
+        a = A(addr);
+    }
+
+   function test(uint data) external {
+      a.f{value: 1e18}(data, 1); 
+      a.f{value: 1e18}(data, 2);
+   }
+}
