@@ -1,7 +1,7 @@
-import { describe } from "mocha";
 import { expect } from "chai";
 import * as vuilder from "@vite/vuilder";
 import config from "../vite.config.json";
+import { sleep } from "@vite/vuilder/lib/utils";
 
 let provider: any;
 let deployer: vuilder.UserAccount;
@@ -34,6 +34,8 @@ describe("test Cafe", () => {
         ["vite_3345524abf6bbe1809449224b5972c41790b6cf2e22fcb5caf", 2],
         { amount: "2000000000000000000" }
       );
+      await sleep(100)
+
     }
   });
 });

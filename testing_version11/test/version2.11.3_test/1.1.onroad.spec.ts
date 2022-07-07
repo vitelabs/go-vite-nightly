@@ -1,7 +1,7 @@
-import { describe } from "mocha";
 import { expect } from "chai";
 import * as vuilder from "@vite/vuilder";
 import config from "../vite.config.json";
+import { sleep } from "@vite/vuilder/lib/utils";
 
 let provider: any;
 let deployer: vuilder.UserAccount;
@@ -38,6 +38,7 @@ describe("test onroad", () => {
     const num = 5;
     for (let i = 0; i < num; i++) {
       b.call('test', ['123456'], {});
+      await sleep(200)
     }
   });
 });
