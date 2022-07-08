@@ -1,7 +1,8 @@
-import { expect } from "chai";
+import { expect, assert } from "chai";
 import * as vuilder from "@vite/vuilder";
 import config from "../vite.config.json";
 import { sleep } from "@vite/vuilder/lib/utils";
+import { isOrdered } from "../utils/sorted";
 
 let provider: any;
 let deployer: vuilder.UserAccount;
@@ -47,17 +48,21 @@ describe("test Cafe", () => {
     Promise.all(resArr).then(receiveBlocks => {
       receiveBlocks.forEach(receiveBlock => {
         // console.log("the receiveBlock:", receiveBlock);
-        receiveHeights.push(receiveBlock.height);
+        receiveHeights.push(Number(receiveBlock.height));
         const block = provider.request("ledger_getAccountBlockByHash", receiveBlock.sendBlockHash);
         sendBlocks.push(block);
       });
+      assert.equal(receiveHeights.length, num);
+      expect(isOrdered(receiveHeights, true)).to.be.true;
       console.log("the receiveBlock`s height", receiveHeights);
 
       Promise.all(sendBlocks).then(sendBlocks => {
         // console.log("the sendBlock:", sendBlocks);
         sendBlocks.forEach(sendBlock => {
-          sendHeights.push(sendBlock.height);
+          sendHeights.push(Number(sendBlock.height));
         });
+        assert.equal(sendHeights.length, num);
+        expect(isOrdered(sendHeights, true)).to.be.true;
         console.log("the sendBlock`s height", sendHeights);
       });
     });
