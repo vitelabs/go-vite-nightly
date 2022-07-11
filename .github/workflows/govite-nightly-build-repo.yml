@@ -11,7 +11,8 @@ on:
         required: true
       repo:
         description: 'nightly build repo'
-        required: vitelabs/go-vite
+        required: true
+        default: 'vitelabs/go-vite'
 
 jobs:
   build:
