@@ -1,9 +1,9 @@
 // import { describe } from "mocha";
 import { expect, assert } from "chai";
 import * as vuilder from "@vite/vuilder";
-import config from "./vite.config.json";
-import fundAbi from "./abi/fund.abi.json"
-import tradeAbi from "./abi/trade.abi.json"
+import config from "../vite.config.json";
+import fundAbi from "../abi/fund.abi.json"
+import tradeAbi from "../abi/trade.abi.json"
 
 let provider: any;
 let deployer: vuilder.UserAccount;
@@ -18,9 +18,9 @@ const quoteToken = "tti_5649544520544f4b454e6e40"  // vite
 describe("test version11 upgrade", () => {
   before(async function () {
     provider = vuilder.newProvider(config.networks.local.http);
-    console.log(await provider.request("ledger_getSnapshotChainHeight"));
     deployer = vuilder.newAccount(config.networks.local.mnemonic, 0, provider);
-    console.log("deployer", deployer.address);
+    console.log(await provider.request("ledger_getSnapshotChainHeight"));
+
     fundContract = new vuilder.Contract("FundContract", "", fundAbi);
     fundContract.attach(fundContractAddress);
     fundContract.setDeployer(deployer);
@@ -45,38 +45,14 @@ describe("test version11 upgrade", () => {
     });
   });
 
-  it("test Fund/placeOrder orderType ", async () => {
-    const orderSide = false // true:buy false:sell 
-    const orderType = "1" // 0:limit 1:market 2:postOnly 3:FillOrKill 4:ImmediateOrCancel
-
-    // before upgrade
-    await provider.request("virtual_addUpgrade", 11, 1000000);
-    try {
-      await fundContract.call(
-        "PlaceOrder",
-        [tradeToken, quoteToken, orderSide, orderType, "2.974", "60000000000000000000"],
-        { amount: "0" }
-      );
-      assert.fail("fail message")
-    } catch (err) {
-      expect((err as Error).message).to.be.equal("revert, methodName: PlaceOrder")
-    }
-
-    // after upgrade
-    await provider.request("virtual_addUpgrade", 11, 1);
-    await fundContract.call(
-      "PlaceOrder",
-      [tradeToken, quoteToken, orderSide, orderType, "20.974", "60000000000000000000"],
-      { amount: "0" }
-    );
-  });
-
-  it("test Trade/clearExpiredOrders ", async () => {
-    // before upgrade
-    await provider.request("virtual_addUpgrade", 11, 1000000);
+  it("test Trade Contract - clearExpiredOrders ", async () => {
     let orderId = "000002010000000002e2c6ec8c00006299757e000000";
     const dataHex = Buffer.from(orderId, 'binary').toString('hex');
     console.log("the data length:", dataHex.length);
+
+    // before upgrade
+    await provider.request("virtual_addUpgrade", 11, 1000000);
+
     try {
       await tradeContract.call(
         "ClearExpiredOrders",

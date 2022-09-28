@@ -1,9 +1,9 @@
 // import { describe } from "mocha";
 import { expect, assert } from "chai";
 import * as vuilder from "@vite/vuilder";
-import config from "./vite.config.json";
-import fundAbi from "./abi/fund.abi.json"
-import tradeAbi from "./abi/trade.abi.json"
+import config from "../vite.config.json";
+import fundAbi from "../abi/fund.abi.json"
+import tradeAbi from "../abi/trade.abi.json"
 
 let provider: any;
 let deployer: vuilder.UserAccount;
@@ -43,6 +43,32 @@ describe("test version11 upgrade", () => {
       amount: "2000000000000000000000",
       tokenId: tradeToken
     });
+  });
+
+  it("test Fund/placeOrder orderType ", async () => {
+    const orderSide = false // true:buy false:sell 
+    const orderType = "1" // 0:limit 1:market 2:postOnly 3:FillOrKill 4:ImmediateOrCancel
+
+    // before upgrade
+    await provider.request("virtual_addUpgrade", 11, 1000000);
+    try {
+      await fundContract.call(
+        "PlaceOrder",
+        [tradeToken, quoteToken, orderSide, orderType, "2.974", "60000000000000000000"],
+        { amount: "0" }
+      );
+      assert.fail("fail message")
+    } catch (err) {
+      expect((err as Error).message).to.be.equal("revert, methodName: PlaceOrder")
+    }
+
+    // after upgrade
+    await provider.request("virtual_addUpgrade", 11, 1);
+    await fundContract.call(
+      "PlaceOrder",
+      [tradeToken, quoteToken, orderSide, orderType, "20.974", "60000000000000000000"],
+      { amount: "0" }
+    );
   });
 
   it("test Fund/placeOrder orderType - Market ", async () => {

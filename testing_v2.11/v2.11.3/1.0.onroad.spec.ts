@@ -11,8 +11,8 @@ let deployer: vuilder.UserAccount;
 describe("test Cafe", () => {
   before(async function () {
     provider = vuilder.newProvider(config.networks.local.http);
-    console.log(await provider.request("ledger_getSnapshotChainHeight"));
     deployer = vuilder.newAccount(config.networks.local.mnemonic, 0, provider);
+    console.log('current height', await provider.request("ledger_getSnapshotChainHeight"));
     console.log('deployer', deployer.address);
   });
 
@@ -29,7 +29,7 @@ describe("test Cafe", () => {
 
     // call methods
     let resArr: Array<any> = []
-    const num = 1;
+    const num = 5;
     for (let i = 0; i < num; i++) {
       const res = cafe.call(
         "buyCoffee",
@@ -40,7 +40,6 @@ describe("test Cafe", () => {
       await sleep(100)
     }
     
-
     // verify height of sendBlocks and receiveBlocks 
     let sendBlocks: Array<any> = []
     let receiveHeights: Array<number> = []

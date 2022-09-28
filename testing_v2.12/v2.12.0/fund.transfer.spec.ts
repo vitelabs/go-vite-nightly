@@ -1,8 +1,8 @@
 // import { describe } from "mocha";
 import { expect, assert } from "chai";
 import * as vuilder from "@vite/vuilder";
-import config from "./vite.config.json";
-import fundAbi from "./abi/fund.abi.json"
+import config from "../vite.config.json";
+import fundAbi from "../abi/fund.abi.json"
 
 let provider: any;
 let deployer: vuilder.UserAccount;
