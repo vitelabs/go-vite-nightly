@@ -54,7 +54,7 @@ describe("test onroad", () => {
     let triggerReceiveBlocks: Array<any> = []
     let triggerReceiveBlockHeights: Array<number> = []
 
-    Promise.all(resArr).then(receiveBlocks => {
+    await Promise.all(resArr).then(async receiveBlocks => {
       receiveBlocks.forEach(receiveBlock => {
         // console.log("the receiveBlock:", receiveBlock);
         receiveHeights.push(Number(receiveBlock.height));
@@ -71,7 +71,7 @@ describe("test onroad", () => {
       expect(isOrdered(receiveHeights, true)).to.be.true;
       console.log("the receiveBlock`s height", receiveHeights);
 
-      Promise.all(sendBlocks).then(sendBlocks => {
+await      Promise.all(sendBlocks).then(sendBlocks => {
         // console.log("the sendBlock:", sendBlocks);
         sendBlocks.forEach(sendBlock => {
           sendHeights.push(Number(sendBlock.height));
@@ -96,7 +96,7 @@ describe("test onroad", () => {
         triggerReceiveBlocks.push(b);
       });
 
-      Promise.all(triggerReceiveBlocks).then(receiveBlocks => {
+      await Promise.all(triggerReceiveBlocks).then(receiveBlocks => {
         // console.log("the triggerReceiveBlocks:", receiveBlocks);
         receiveBlocks.forEach(r => {
           triggerReceiveBlockHeights.push(Number(r.height));

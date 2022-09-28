@@ -29,7 +29,7 @@ describe("test Cafe", () => {
 
     // call methods
     let resArr: Array<any> = []
-    const num = 5;
+    const num = 1;
     for (let i = 0; i < num; i++) {
       const res = cafe.call(
         "buyCoffee",
@@ -39,13 +39,14 @@ describe("test Cafe", () => {
       resArr.push(res);
       await sleep(100)
     }
+    
 
     // verify height of sendBlocks and receiveBlocks 
     let sendBlocks: Array<any> = []
     let receiveHeights: Array<number> = []
     let sendHeights: Array<number> = []
 
-    Promise.all(resArr).then(receiveBlocks => {
+    await Promise.all(resArr).then(async receiveBlocks => {
       receiveBlocks.forEach(receiveBlock => {
         // console.log("the receiveBlock:", receiveBlock);
         receiveHeights.push(Number(receiveBlock.height));
@@ -56,7 +57,7 @@ describe("test Cafe", () => {
       expect(isOrdered(receiveHeights, true)).to.be.true;
       console.log("the receiveBlock`s height", receiveHeights);
 
-      Promise.all(sendBlocks).then(sendBlocks => {
+      await Promise.all(sendBlocks).then(sendBlocks => {
         // console.log("the sendBlock:", sendBlocks);
         sendBlocks.forEach(sendBlock => {
           sendHeights.push(Number(sendBlock.height));
