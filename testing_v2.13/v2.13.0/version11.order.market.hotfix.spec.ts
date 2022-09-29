@@ -1,7 +1,6 @@
 // import { describe } from "mocha";
 import { expect, assert } from "chai";
 import * as vuilder from "@vite/vuilder";
-import config from "../vite.config.json";
 import fundAbi from "../abi/fund.abi.json";
 import tradeAbi from "../abi/trade.abi.json";
 import { contractWithUser, initValue, randomUser } from "../utils/user";
@@ -25,9 +24,9 @@ const orderLimit = 0;
 
 describe("test version11 upgrade", () => {
   before(async function () {
-    provider = vuilder.newProvider(config.networks.local.http);
+    provider = vuilder.newProvider(vuilder.defaultViteNetwork.http);
     console.log(await provider.request("ledger_getSnapshotChainHeight"));
-    deployer = vuilder.newAccount(config.networks.local.mnemonic, 0, provider);
+    deployer = vuilder.newAccount(vuilder.defaultViteNetwork.mnemonic, 0, provider);
 
     tradeContract = new vuilder.Contract("TradeContract", "", tradeAbi);
     tradeContract.attach(tradeContractAddress);
