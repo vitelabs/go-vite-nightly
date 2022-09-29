@@ -72,7 +72,7 @@ export async function cancelAllOrders(
 
   let orderBook = await getOrderBooks(provider, tradeToken, quoteToken);
   if (orderBook.orders === undefined) {
-    console.log("no orders in the market, don`t need to cancel");
+    console.log("no orders in the market, no need to cancel");
     return;
   }
 
