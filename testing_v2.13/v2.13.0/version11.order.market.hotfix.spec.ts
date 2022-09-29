@@ -5,7 +5,7 @@ import config from "../vite.config.json";
 import fundAbi from "../abi/fund.abi.json";
 import tradeAbi from "../abi/trade.abi.json";
 import { contractWithUser, initValue, randomUser } from "../utils/user";
-import { depositToFund, getOrderBooks, placeOrder, cancelOrder, getFundBalanceByAddrAndTokenId } from "../utils/dex";
+import { depositToFund, getOrderBooks, placeOrder, cancelAllOrders, getFundBalanceByAddrAndTokenId} from "../utils/dex";
 
 let provider: any;
 let deployer: vuilder.UserAccount;
@@ -36,14 +36,9 @@ describe("test version11 upgrade", () => {
   });
 
   beforeEach(async function () {
-    // const orders = await getOrderBooks(tradeContract, tradeToken, quoteToken);
-    // assert.equal(0, len(orders));
-  });
-
-  afterEach(async function () {
-    // const orders = await getOrderBooks(tradeContract, tradeToken, quoteToken);
-    // cancel all orders
-    // await cancelOrder(tradeContract, orderId);
+    let orderBook = await getOrderBooks(provider, tradeToken, quoteToken);
+    assert.equal(orderBook.orders, undefined); // no orders in the beginning
+    // assert.equal(0, orderBook.orders.length);
   });
 
   it("test Fund/placeOrder orderType - Market ", async () => {
@@ -79,5 +74,9 @@ describe("test version11 upgrade", () => {
     
     console.log(quoteBalanceUser1, tradeBalanceUser1);
     console.log(quoteBalanceUser2, tradeBalanceUser2);
+
+    await cancelAllOrders(provider, tradeToken, quoteToken, user1Address, user1TradeContract, user2TradeContract);
   });
 });
+
+
