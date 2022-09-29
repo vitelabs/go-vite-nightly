@@ -10,6 +10,13 @@ export async function depositToFund(userFundContract: vuilder.Contract, initAmou
   });
 }
 
+export async function openNewMarket(fundContract: vuilder.Contract, tradeTokenId: string, quoteTokenId: string) {
+  const block = await fundContract.call("OpenNewMarket", [tradeTokenId, quoteTokenId], {
+    amount: "10000000000000000000000",
+  });
+  // @todo: dex_fund error="only owner allow"
+}
+
 export async function getOrderBooks(provider: any, tradeTokenId: string, quoteTokenId: string) {
   const marketOrderParam = {
     'TradeToken': tradeTokenId,
@@ -82,30 +89,62 @@ export async function cancelAllOrders(
   assert.equal(orderBook.orders, undefined);
 }
 
-export function getBuyerCostAmount(price: string, quantity: string, takerPlatformFeeRate: number, takerBrokerFeeRate: number): Decimal {
-  let totalAmount: Decimal;
-  totalAmount = new Decimal(price).mul(new Decimal(quantity)).mul(new Decimal(1 + (takerPlatformFeeRate + takerBrokerFeeRate)));
+export function getBuyerCostAmount(
+  price: string, 
+  quantity: string, 
+  takerPlatformFeeRate: number,
+  takerBrokerFeeRate: number,
+  tradeTokenDecimal: number, 
+  quoteTokenDecimal: number): Decimal {
+  
+  if(tradeTokenDecimal == quoteTokenDecimal) {
+    return new Decimal(price).mul(new Decimal(quantity)).mul(new Decimal(1 + (takerPlatformFeeRate + takerBrokerFeeRate)));
+  } 
 
-  return totalAmount;
+  return new Decimal(price).mul(new Decimal(quantity)).mul(new Decimal(1 + (takerPlatformFeeRate + takerBrokerFeeRate))).mul(new Decimal(Math.pow(10, quoteTokenDecimal - tradeTokenDecimal)));
 }
 
-export function getBuyerFee(price: string, quantity: string, takerPlatformFeeRate: number, takerBrokerFeeRate: number): Decimal {
-  let totalFee: Decimal;
-  totalFee = new Decimal(price).mul(new Decimal(quantity)).mul(new Decimal(takerPlatformFeeRate + takerBrokerFeeRate));
+export function getBuyerFee(
+  price: string, 
+  quantity: string, 
+  takerPlatformFeeRate: number,
+  takerBrokerFeeRate: number,
+  tradeTokenDecimal: number, 
+  quoteTokenDecimal: number): Decimal {
 
-  return totalFee;
+  if(tradeTokenDecimal == quoteTokenDecimal){
+    return new Decimal(price).mul(new Decimal(quantity)).mul(new Decimal(takerPlatformFeeRate + takerBrokerFeeRate));
+  } 
+
+  return new Decimal(price).mul(new Decimal(quantity)).mul(new Decimal(takerPlatformFeeRate + takerBrokerFeeRate)).mul(new Decimal(Math.pow(10, quoteTokenDecimal- tradeTokenDecimal)));
 }
 
-export function getSellerObtainAmount(price: string, quantity: string, makerPlatformFeeRate: number, makerBrokerFeefeeRate: number): Decimal {
-  let totalAmount: Decimal;
-  totalAmount = new Decimal(price).mul(new Decimal(quantity)).mul(new Decimal(1 - (makerPlatformFeeRate + makerBrokerFeefeeRate)));
+export function getSellerObtainAmount(
+  price: string, 
+  quantity: string,
+  makerPlatformFeeRate: number,
+  makerBrokerFeefeeRate: number,
+  tradeTokenDecimal: number, 
+  quoteTokenDecimal: number): Decimal {
 
-  return totalAmount;
+  if (tradeTokenDecimal == quoteTokenDecimal) {
+    return new Decimal(price).mul(new Decimal(quantity)).mul(new Decimal(1 - (makerPlatformFeeRate + makerBrokerFeefeeRate)));
+  } 
+
+  return new Decimal(price).mul(new Decimal(quantity)).mul(new Decimal(1 - (makerPlatformFeeRate + makerBrokerFeefeeRate))).mul(new Decimal(Math.pow(10, quoteTokenDecimal - tradeTokenDecimal)));
 }
 
-export function getSellerFee(price: string, quantity: string, makerPlatformFeeRate: number, makerBrokerFeefeeRate: number): Decimal {
-  let totalFee: Decimal;
-  totalFee = new Decimal(price).mul(new Decimal(quantity)).mul(new Decimal(makerPlatformFeeRate + makerBrokerFeefeeRate));
+export function getSellerFee(
+  price: string, 
+  quantity: string, 
+  makerPlatformFeeRate: number,
+  makerBrokerFeefeeRate: number,
+  tradeTokenDecimal: number, 
+  quoteTokenDecimal: number): Decimal {
 
-  return totalFee;
+  if(tradeTokenDecimal == quoteTokenDecimal) {
+    return new Decimal(price).mul(new Decimal(quantity)).mul(new Decimal(makerPlatformFeeRate + makerBrokerFeefeeRate));
+  } 
+
+  return  new Decimal(price).mul(new Decimal(quantity)).mul(new Decimal(makerPlatformFeeRate + makerBrokerFeefeeRate)).mul(new Decimal(Math.pow(10, quoteTokenDecimal- tradeTokenDecimal)));
 }

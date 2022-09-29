@@ -4,7 +4,7 @@ import * as vuilder from "@vite/vuilder";
 import fundAbi from "../abi/fund.abi.json";
 import tradeAbi from "../abi/trade.abi.json";
 import { contractWithUser, initValue, randomUser } from "../utils/user";
-import { depositToFund, getOrderBooks, placeOrder, cancelAllOrders, getFundBalanceByAddrAndTokenId} from "../utils/dex";
+import * as dex from "../utils/dex";
 
 let provider: any;
 let deployer: vuilder.UserAccount;
@@ -35,7 +35,7 @@ describe("test version11 upgrade", () => {
   });
 
   beforeEach(async function () {
-    let orderBook = await getOrderBooks(provider, tradeToken, quoteToken);
+    let orderBook = await dex.getOrderBooks(provider, tradeToken, quoteToken);
     assert.equal(orderBook.orders, undefined); // no orders in the beginning
     // assert.equal(0, orderBook.orders.length);
   });
@@ -56,25 +56,25 @@ describe("test version11 upgrade", () => {
     await initValue(deployer, user1, initVttAmount, tradeToken);
     await initValue(deployer, user2, initViteAmount);
 
-    await depositToFund(user2FundContract, initViteAmount);
-    await depositToFund(user1FundContract, initVttAmount, tradeToken);
+    await dex.depositToFund(user2FundContract, initViteAmount);
+    await dex.depositToFund(user1FundContract, initVttAmount, tradeToken);
     
     // case1. place Market order while there are no orders in orderbook(predict:cancel)
-    await placeOrder(user1FundContract, tradeToken, quoteToken, sideSell, orderLimit, "30", "50000000000000000000"); // sell 50 VTT
-    await placeOrder(user1FundContract, tradeToken, quoteToken, sideSell, orderLimit, "40", "50000000000000000000"); // sell 50 VTT
-    await placeOrder(user2FundContract, tradeToken, quoteToken, sideBuy, orderMarket, "8", "90000000000000000000");  // buy 90 VTT
+    await dex.placeOrder(user1FundContract, tradeToken, quoteToken, sideSell, orderLimit, "30", "50000000000000000000"); // sell 50 VTT
+    await dex.placeOrder(user1FundContract, tradeToken, quoteToken, sideSell, orderLimit, "40", "50000000000000000000"); // sell 50 VTT
+    await dex.placeOrder(user2FundContract, tradeToken, quoteToken, sideBuy, orderMarket, "8", "90000000000000000000");  // buy 90 VTT
     
     const user1Address = user1.address;
     const user2Address = user2.address;
-    const quoteBalanceUser1 = await getFundBalanceByAddrAndTokenId(provider, user1Address, quoteToken);
-    const tradeBalanceUser1 = await getFundBalanceByAddrAndTokenId(provider, user1Address, tradeToken);
-    const quoteBalanceUser2 = await getFundBalanceByAddrAndTokenId(provider, user2Address, quoteToken);
-    const tradeBalanceUser2 = await getFundBalanceByAddrAndTokenId(provider, user2Address, tradeToken);
+    const quoteBalanceUser1 = await dex.getFundBalanceByAddrAndTokenId(provider, user1Address, quoteToken);
+    const tradeBalanceUser1 = await dex.getFundBalanceByAddrAndTokenId(provider, user1Address, tradeToken);
+    const quoteBalanceUser2 = await dex.getFundBalanceByAddrAndTokenId(provider, user2Address, quoteToken);
+    const tradeBalanceUser2 = await dex.getFundBalanceByAddrAndTokenId(provider, user2Address, tradeToken);
     
     console.log(quoteBalanceUser1, tradeBalanceUser1);
     console.log(quoteBalanceUser2, tradeBalanceUser2);
 
-    await cancelAllOrders(provider, tradeToken, quoteToken, user1Address, user1TradeContract, user2TradeContract);
+    await dex.cancelAllOrders(provider, tradeToken, quoteToken, user1Address, user1TradeContract, user2TradeContract);
   });
 });
 

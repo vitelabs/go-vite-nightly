@@ -10,20 +10,20 @@ import * as dex from "../utils/dex";
 let provider: any;
 let deployer: vuilder.UserAccount;
 let tradeContract: vuilder.Contract;
+let fundContract: vuilder.Contract;
 let takerPlatformFeeRate: number = 0.002;
 let makerPlatformFeeRate: number = 0.002;
 let takerBrokerFeeRate: number = 0;
 let makerBrokerFeeRate: number = 0;
 let tradeTokenDecimal: number = 18;
-let quoteTokenDecimal: number = 18;
+let quoteTokenDecimal: number = 8;
 
 const fundContractAddress =
   "vite_0000000000000000000000000000000000000006e82b8ba657";
 const tradeContractAddress =
   "vite_00000000000000000000000000000000000000079710f19dc7";
 const tradeToken = "tti_2736f320d7ed1c2871af1d9d"; // vtt
-const quoteToken = "tti_5649544520544f4b454e6e40"; // vite
-
+const quoteToken = "tti_322862b3f8edae3b02b110b1"; // BTC
 
 const sideBuy = false;
 const sideSell = true;
@@ -35,6 +35,11 @@ describe("test version11 upgrade", () => {
     provider = vuilder.newProvider(vuilder.defaultViteNetwork.http);
     console.log(await provider.request("ledger_getSnapshotChainHeight"));
     deployer = vuilder.newAccount(vuilder.defaultViteNetwork.mnemonic, 0, provider);
+
+    fundContract = new vuilder.Contract("FundContract", "", fundAbi);
+    fundContract.attach(fundContractAddress);
+    fundContract.setDeployer(deployer);
+    fundContract.setProvider(provider);
 
     tradeContract = new vuilder.Contract("TradeContract", "", tradeAbi);
     tradeContract.attach(tradeContractAddress);
@@ -48,8 +53,12 @@ describe("test version11 upgrade", () => {
     // assert.equal(0, orderBook.orders.length);
   });
 
+  // it("test FundContract placeOrder - Open tradePairs ", async () => {
+  //     await openNewMarket(fundContract, "tti_e1da8b1f4194f8c7d7f52751", "tti_5649544520544f4b454e6e40");
+  // });
+
   it("test FundContract placeOrder - LimitOrder ", async () => {
-    const initViteAmount = "100000000000000000000000"; // 10w VITE
+    const initBtcAmount = "1000000000"; // 10 BTC
     const initVttAmount = "100000000000000000000000";  // 10w VTT
 
     const user1 = randomUser(provider); // seller
@@ -64,13 +73,13 @@ describe("test version11 upgrade", () => {
     const user2TradeContract = contractWithUser(user2, tradeAbi, tradeContractAddress);
 
     await initValue(deployer, user1, initVttAmount, tradeToken);
-    await initValue(deployer, user1, initViteAmount);
+    await initValue(deployer, user1, initBtcAmount, quoteToken);
     await initValue(deployer, user2, initVttAmount, tradeToken);
-    await initValue(deployer, user2, initViteAmount);
+    await initValue(deployer, user2, initBtcAmount, quoteToken);
 
-    await dex.depositToFund(user1FundContract, initViteAmount);
+    await dex.depositToFund(user1FundContract, initBtcAmount, quoteToken);
     await dex.depositToFund(user1FundContract, initVttAmount, tradeToken);
-    await dex.depositToFund(user2FundContract, initViteAmount);
+    await dex.depositToFund(user2FundContract, initBtcAmount, quoteToken);
     await dex.depositToFund(user2FundContract, initVttAmount, tradeToken);
 
     const quoteBalanceUser1_before = await dex.getFundBalanceByAddrAndTokenId(provider, user1Address, quoteToken);
@@ -89,19 +98,19 @@ describe("test version11 upgrade", () => {
     console.log("user1 balance before", viteValue1_before, viteValueLocked1_before, vttValue1_before, vttValueLocked1_before);
     console.log("user2 balance before", viteValue2_before, viteValueLocked2_before, vttValue2_before, vttValueLocked2_before);
 
-    assert.equal(viteValue1_before, initViteAmount);
+    assert.equal(viteValue1_before, initBtcAmount);
     assert.equal(viteValueLocked1_before, "0");
     assert.equal(vttValue1_before, initVttAmount);
     assert.equal(vttValueLocked1_before, "0");
-    assert.equal(viteValue2_before, initViteAmount);
+    assert.equal(viteValue2_before, initBtcAmount);
     assert.equal(viteValueLocked2_before, "0");
     assert.equal(vttValue2_before, initVttAmount);
     assert.equal(vttValueLocked2_before, "0");
 
 
-    // place Limit orders
-    const price = "8000"
-    const quantity = "6000000000000000000"
+    // place Limit orders: VTT/BTC
+    const price = "0.008"
+    const quantity = "6000000000000000000" 
     await dex.placeOrder(user1FundContract, tradeToken, quoteToken, sideSell, orderLimit, price, quantity); // sell 6 VTT
     await dex.placeOrder(user2FundContract, tradeToken, quoteToken, sideBuy, orderLimit, price, quantity); // sell 6 VTT
 
@@ -122,11 +131,11 @@ describe("test version11 upgrade", () => {
     console.log("user2 balance after:", viteValue2_after, viteValueLocked2_after, vttValue2_after, vttValueLocked2_after);
 
     const tradingQuantity = new Decimal(vttValue2_after).sub(new Decimal(vttValue2_before)).toFixed();
-    assert.equal(viteValue1_after, new Decimal(initViteAmount).add(dex.getSellerObtainAmount(price, tradingQuantity, makerPlatformFeeRate, makerBrokerFeeRate, tradeTokenDecimal, quoteTokenDecimal)).toFixed());
+    assert.equal(viteValue1_after, new Decimal(initBtcAmount).add(dex.getSellerObtainAmount(price, tradingQuantity, makerPlatformFeeRate, makerBrokerFeeRate, tradeTokenDecimal, quoteTokenDecimal)).toFixed());
     assert.equal(viteValueLocked1_after, "0");
     assert.equal(vttValue1_after, new Decimal(initVttAmount).sub(new Decimal(tradingQuantity)).toFixed());
     assert.equal(vttValueLocked1_after, "0");
-    assert.equal(viteValue2_after, (new Decimal(initViteAmount).sub(dex.getBuyerCostAmount(price, tradingQuantity, takerPlatformFeeRate, takerBrokerFeeRate, tradeTokenDecimal, quoteTokenDecimal))).toFixed());
+    assert.equal(viteValue2_after, (new Decimal(initBtcAmount).sub(dex.getBuyerCostAmount(price, tradingQuantity, takerPlatformFeeRate, takerBrokerFeeRate, tradeTokenDecimal, quoteTokenDecimal))).toFixed());
     assert.equal(viteValueLocked2_after, "0");
     assert.equal(vttValue2_after, new Decimal(initVttAmount).add(new Decimal(tradingQuantity)).toFixed());
     assert.equal(vttValueLocked2_after, "0");
@@ -135,7 +144,7 @@ describe("test version11 upgrade", () => {
   });
 
   it("test FundContract placeOrder - MarketOrder ", async () => {
-    const initViteAmount = "100000000000000000000000"; // 10w VITE
+    const initBtcAmount = "1000000000"; // 10 BTC
     const initVttAmount = "100000000000000000000000";  // 10w VTT
 
     const user1 = randomUser(provider); // seller
@@ -150,19 +159,19 @@ describe("test version11 upgrade", () => {
     const user2TradeContract = contractWithUser(user2, tradeAbi, tradeContractAddress);
 
     await initValue(deployer, user1, initVttAmount, tradeToken);
-    await initValue(deployer, user1, initViteAmount);
+    await initValue(deployer, user1, initBtcAmount, quoteToken);
     await initValue(deployer, user2, initVttAmount, tradeToken);
-    await initValue(deployer, user2, initViteAmount);
+    await initValue(deployer, user2, initBtcAmount, quoteToken);
 
-    await dex.depositToFund(user1FundContract, initViteAmount);
+    await dex.depositToFund(user1FundContract, initBtcAmount, quoteToken);
     await dex.depositToFund(user1FundContract, initVttAmount, tradeToken);
-    await dex.depositToFund(user2FundContract, initViteAmount);
-    await dex.depositToFund(user2FundContract, initViteAmount, tradeToken);
+    await dex.depositToFund(user2FundContract, initBtcAmount, quoteToken);
+    await dex.depositToFund(user2FundContract, initVttAmount, tradeToken);
 
     // place Limit orders
-    const price1 = "8000"
-    const price2 = "9000"
-    const price3 = "0.25"
+    const price1 = "0.008"
+    const price2 = "0.009"
+    const price3 = "0.00025"
     const quantity = "6000000000000000000"
     await dex.placeOrder(user1FundContract, tradeToken, quoteToken, sideSell, orderLimit, price1, quantity); // sell 6 VTT
     await dex.placeOrder(user2FundContract, tradeToken, quoteToken, sideBuy, orderLimit, price1, quantity); // sell 6 VTT
@@ -186,8 +195,8 @@ describe("test version11 upgrade", () => {
     console.log("user2 balance after:", viteValue2_after, viteValueLocked2_after, vttValue2_after, vttValueLocked2_after);
 
     const tradingQuantityOfMarketOrder = new Decimal(quantity).sub(new Decimal(vttValueLocked1_after)).toFixed();
-    assert.equal(viteValue1_after, new Decimal(initViteAmount).add(dex.getSellerObtainAmount(price1, quantity, makerPlatformFeeRate, makerBrokerFeeRate, tradeTokenDecimal, quoteTokenDecimal))
-      .add(dex.getSellerObtainAmount(price2, tradingQuantityOfMarketOrder, makerPlatformFeeRate, makerBrokerFeeRate, tradeTokenDecimal, quoteTokenDecimal)).toFixed());
+    assert.equal(viteValue1_after, new Decimal(initBtcAmount).add(dex.getSellerObtainAmount(price1, quantity, makerPlatformFeeRate, makerBrokerFeeRate, tradeTokenDecimal, quoteTokenDecimal))
+      .add(dex.getSellerObtainAmount(price2, tradingQuantityOfMarketOrder, makerPlatformFeeRate, makerBrokerFeeRate, tradeTokenDecimal ,quoteTokenDecimal)).toFixed());
     assert.equal(viteValueLocked1_after, "0");
     assert.equal(vttValue1_after, new Decimal(initVttAmount).sub(new Decimal(quantity)).sub(new Decimal(quantity)).toFixed());
     assert.equal(vttValueLocked1_after, new Decimal(initVttAmount).add(new Decimal(quantity)).add(new Decimal(quantity)).sub(new Decimal(vttValue2_after)));
@@ -198,9 +207,9 @@ describe("test version11 upgrade", () => {
 
     // the total value of VITE hold by user1 and user2 + the TradingFees must be 20w
     const totalFees = dex.getSellerFee(price1, quantity, makerPlatformFeeRate, makerBrokerFeeRate, tradeTokenDecimal, quoteTokenDecimal).add(dex.getBuyerFee(price1, quantity, takerPlatformFeeRate, takerBrokerFeeRate, tradeTokenDecimal, quoteTokenDecimal))
-      .add(dex.getSellerFee(price2, tradingQuantityOfMarketOrder, makerPlatformFeeRate, makerBrokerFeeRate, tradeTokenDecimal, quoteTokenDecimal)).add(dex.getBuyerFee(price2, tradingQuantityOfMarketOrder, takerPlatformFeeRate, takerBrokerFeeRate, tradeTokenDecimal, quoteTokenDecimal)).toFixed();
+      .add(dex.getSellerFee(price2, tradingQuantityOfMarketOrder, makerPlatformFeeRate, makerBrokerFeeRate,tradeTokenDecimal ,quoteTokenDecimal)).add(dex.getBuyerFee(price2, tradingQuantityOfMarketOrder, takerPlatformFeeRate, takerBrokerFeeRate,tradeTokenDecimal ,quoteTokenDecimal)).toFixed();
 
-    assert.equal(new Decimal(initViteAmount).mul(2).toFixed(),
+    assert.equal(new Decimal(initBtcAmount).mul(2).toFixed(),
       (new Decimal(viteValue1_after).add(new Decimal(viteValueLocked1_after)).add(new Decimal(viteValue2_after)).add(new Decimal(viteValueLocked2_after)
         .add(new Decimal(totalFees))).toFixed()));
 
