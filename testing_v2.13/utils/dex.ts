@@ -1,8 +1,9 @@
 import { assert } from "chai";
 import { wallet } from "@vite/vitejs";
 import * as vuilder from "@vite/vuilder";
+import Decimal from 'decimal.js';
 
-export async function depositToFund(userFundContract: vuilder.Contract, initAmount: string, tokenId: string="tti_5649544520544f4b454e6e40") {
+export async function depositToFund(userFundContract: vuilder.Contract, initAmount: string, tokenId: string = "tti_5649544520544f4b454e6e40") {
   await userFundContract.call("DexFundUserDeposit", [], {
     amount: initAmount,
     tokenId: tokenId,
@@ -55,14 +56,19 @@ export async function getFundBalanceByAddrAndTokenId(provider: any, userAddress:
 }
 
 export async function cancelAllOrders(
-  provider: any, 
-  tradeToken: string, 
-  quoteToken: string, 
+  provider: any,
+  tradeToken: string,
+  quoteToken: string,
   user1Address: string,
-  user1TradeContract: vuilder.Contract, 
+  user1TradeContract: vuilder.Contract,
   user2TradeContract: vuilder.Contract) {
 
   let orderBook = await getOrderBooks(provider, tradeToken, quoteToken);
+  if (orderBook.orders === undefined) {
+    console.log("no orders in the market, don`t need to cancel");
+    return;
+  }
+
   for (let i = 0; i < orderBook.orders.length; i++) {
     if (orderBook.orders[i].Address === user1Address) {
       await cancelOrder(user1TradeContract, orderBook.orders[i].Id);
@@ -74,4 +80,32 @@ export async function cancelAllOrders(
 
   orderBook = await getOrderBooks(provider, tradeToken, quoteToken);
   assert.equal(orderBook.orders, undefined);
+}
+
+export function getBuyerCostAmount(price: string, quantity: string, takerPlatformFeeRate: number, takerBrokerFeeRate: number): Decimal {
+  let totalAmount: Decimal;
+  totalAmount = new Decimal(price).mul(new Decimal(quantity)).mul(new Decimal(1 + (takerPlatformFeeRate + takerBrokerFeeRate)));
+
+  return totalAmount;
+}
+
+export function getBuyerFee(price: string, quantity: string, takerPlatformFeeRate: number, takerBrokerFeeRate: number): Decimal {
+  let totalFee: Decimal;
+  totalFee = new Decimal(price).mul(new Decimal(quantity)).mul(new Decimal(takerPlatformFeeRate + takerBrokerFeeRate));
+
+  return totalFee;
+}
+
+export function getSellerObtainAmount(price: string, quantity: string, makerPlatformFeeRate: number, makerBrokerFeefeeRate: number): Decimal {
+  let totalAmount: Decimal;
+  totalAmount = new Decimal(price).mul(new Decimal(quantity)).mul(new Decimal(1 - (makerPlatformFeeRate + makerBrokerFeefeeRate)));
+
+  return totalAmount;
+}
+
+export function getSellerFee(price: string, quantity: string, makerPlatformFeeRate: number, makerBrokerFeefeeRate: number): Decimal {
+  let totalFee: Decimal;
+  totalFee = new Decimal(price).mul(new Decimal(quantity)).mul(new Decimal(makerPlatformFeeRate + makerBrokerFeefeeRate));
+
+  return totalFee;
 }
