@@ -11,10 +11,23 @@ export async function depositToFund(userFundContract: vuilder.Contract, initAmou
 }
 
 export async function openNewMarket(fundContract: vuilder.Contract, tradeTokenId: string, quoteTokenId: string) {
-  const block = await fundContract.call("OpenNewMarket", [tradeTokenId, quoteTokenId], {
+  await fundContract.call("OpenNewMarket", [tradeTokenId, quoteTokenId], {
     amount: "10000000000000000000000",
   });
-  // @todo: dex_fund error="only owner allow"
+}
+
+export async function marketAdminConfig(
+  fundContract: vuilder.Contract, 
+  operationCode: number,
+  tradeTokenId: string,
+  quoteTokenId: string,
+  marketOwner: string,
+  takerFeeRate: number,
+  makerFeeRate: number) {
+
+  await fundContract.call("MarketAdminConfig", [operationCode, tradeTokenId, quoteTokenId, marketOwner, takerFeeRate, makerFeeRate, 0], {
+    amount: "0",
+  });
 }
 
 export async function getOrderBooks(provider: any, tradeTokenId: string, quoteTokenId: string) {

@@ -30,7 +30,7 @@ const sideSell = true;
 const orderMarket = 1;
 const orderLimit = 0;
 
-describe("test version11 upgrade", () => {
+describe("test version13 upgrade", () => {
   before(async function () {
     provider = vuilder.newProvider(vuilder.defaultViteNetwork.http);
     console.log(await provider.request("ledger_getSnapshotChainHeight"));
@@ -52,10 +52,6 @@ describe("test version11 upgrade", () => {
     assert.equal(orderBook.orders, undefined); // no orders in the beginning
     // assert.equal(0, orderBook.orders.length);
   });
-
-  // it("test FundContract placeOrder - Open tradePairs ", async () => {
-  //     await openNewMarket(fundContract, "tti_e1da8b1f4194f8c7d7f52751", "tti_5649544520544f4b454e6e40");
-  // });
 
   it("test FundContract placeOrder - LimitOrder ", async () => {
     const initBtcAmount = "1000000000"; // 10 BTC
@@ -112,7 +108,7 @@ describe("test version11 upgrade", () => {
     const price = "0.008"
     const quantity = "6000000000000000000" 
     await dex.placeOrder(user1FundContract, tradeToken, quoteToken, sideSell, orderLimit, price, quantity); // sell 6 VTT
-    await dex.placeOrder(user2FundContract, tradeToken, quoteToken, sideBuy, orderLimit, price, quantity); // sell 6 VTT
+    await dex.placeOrder(user2FundContract, tradeToken, quoteToken, sideBuy, orderLimit, price, quantity); // buy 6 VTT
 
     const quoteBalanceUser1_after = await dex.getFundBalanceByAddrAndTokenId(provider, user1Address, quoteToken);
     const tradeBalanceUser1_after = await dex.getFundBalanceByAddrAndTokenId(provider, user1Address, tradeToken);
@@ -144,7 +140,7 @@ describe("test version11 upgrade", () => {
   });
 
   it("test FundContract placeOrder - MarketOrder ", async () => {
-    const initBtcAmount = "1000000000"; // 10 BTC
+    const initBtcAmount = "10000000"; // 10 BTC
     const initVttAmount = "100000000000000000000000";  // 10w VTT
 
     const user1 = randomUser(provider); // seller

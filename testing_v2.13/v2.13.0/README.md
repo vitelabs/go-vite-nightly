@@ -8,8 +8,12 @@ cd ~/vscode/go-vite-nightly/testing_v2.13
 npm install
 npx vuilder node --config v2.13.0/vuilder.node.config.json
 python3 dex_init.py
-npx vuilder test v2.13.0/version11.order.market.hotfix.spec.ts --noneNode true
-npx vuilder test v2.13.0/version11.order.market.morecases.spec.ts --noneNode true
+npx vuilder test v2.13.0/version13.order.market.helper.spec.ts --noneNode true
+
+npx vuilder test v2.13.0/version13.order.market.hotfix.spec.ts --noneNode true
+npx vuilder test v2.13.0/version13.order.market.morecases.spec.ts --noneNode true
+npx vuilder test v2.13.0/version13.order.market.decimal.spec.ts --noneNode true
+npx vuilder test v2.13.0/version13.order.market.decimal.newmarket.spec.ts --noneNode true
 # npm run test_v2.13.0
 ```
 
