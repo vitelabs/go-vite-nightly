@@ -166,9 +166,10 @@ describe("test version13 upgrade", () => {
 
     // place Limit orders
     const price1 = "8000"
-    const price2 = "500"
+    // const price2 = "500"
+
     // todo: can not pass
-    // const price2 = "9000"
+    const price2 = "9000"
     const price3 = "0.25"
     const quantity = "6000000"
     await dex.placeOrder(user1FundContract, tradeToken, quoteToken, sideSell, orderLimit, price1, quantity); // sell 6 WOW
@@ -197,15 +198,18 @@ describe("test version13 upgrade", () => {
       .add(dex.getSellerObtainAmount(price2, tradingQuantityOfMarketOrder, makerPlatformFeeRate, makerBrokerFeeRate, tradeTokenDecimal ,quoteTokenDecimal)).toFixed());
     assert.equal(quoteValueLocked1_after, "0");
     assert.equal(tradeValue1_after, new Decimal(initTradeAmount).sub(new Decimal(quantity)).sub(new Decimal(quantity)).toFixed());
-    assert.equal(tradeValueLocked1_after, new Decimal(initTradeAmount).add(new Decimal(quantity)).add(new Decimal(quantity)).sub(new Decimal(tradeValue2_after)));
+    assert.equal(tradeValueLocked1_after, new Decimal(initTradeAmount).add(new Decimal(quantity)).add(new Decimal(quantity)).sub(new Decimal(tradeValue2_after).toFixed()));
 
-    // the total value of VTT hold by user1 and user2 must be 20w
+    // the total value of WOW hold by user1 and user2 must be 2000
     assert.equal(new Decimal(initTradeAmount).mul(2).toFixed(),
       (new Decimal(tradeValue1_after).add(new Decimal(tradeValueLocked1_after)).add(new Decimal(tradeValue2_after)).add(new Decimal(tradeValueLocked2_after)).toFixed()));
 
     // the total value of VITE hold by user1 and user2 + the TradingFees must be 20w
-    const totalFees = dex.getSellerFee(price1, quantity, makerPlatformFeeRate, makerBrokerFeeRate, tradeTokenDecimal, quoteTokenDecimal).add(dex.getBuyerFee(price1, quantity, takerPlatformFeeRate, takerBrokerFeeRate, tradeTokenDecimal, quoteTokenDecimal))
-      .add(dex.getSellerFee(price2, tradingQuantityOfMarketOrder, makerPlatformFeeRate, makerBrokerFeeRate,tradeTokenDecimal ,quoteTokenDecimal)).add(dex.getBuyerFee(price2, tradingQuantityOfMarketOrder, takerPlatformFeeRate, takerBrokerFeeRate,tradeTokenDecimal ,quoteTokenDecimal)).toFixed();
+    const totalFees = dex.getSellerFee(price1, quantity, makerPlatformFeeRate, makerBrokerFeeRate, tradeTokenDecimal, quoteTokenDecimal)
+      .add(dex.getBuyerFee(price1, quantity, takerPlatformFeeRate, takerBrokerFeeRate, tradeTokenDecimal, quoteTokenDecimal))
+      .add(dex.getSellerFee(price2, tradingQuantityOfMarketOrder, makerPlatformFeeRate, makerBrokerFeeRate, tradeTokenDecimal, quoteTokenDecimal))
+      .add(dex.getBuyerFee(price2, tradingQuantityOfMarketOrder, takerPlatformFeeRate, takerBrokerFeeRate, tradeTokenDecimal, quoteTokenDecimal))
+      .toFixed();
 
     assert.equal(new Decimal(initQuoteAmount).mul(2).toFixed(),
       (new Decimal(quoteValue1_after).add(new Decimal(quoteValueLocked1_after)).add(new Decimal(quoteValue2_after)).add(new Decimal(quoteValueLocked2_after)

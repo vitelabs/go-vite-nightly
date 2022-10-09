@@ -111,10 +111,10 @@ export function getBuyerCostAmount(
   quoteTokenDecimal: number): Decimal {
   
   if(tradeTokenDecimal == quoteTokenDecimal) {
-    return new Decimal(price).mul(new Decimal(quantity)).mul(new Decimal(1 + (takerPlatformFeeRate + takerBrokerFeeRate)));
+    return new Decimal(price).mul(new Decimal(quantity)).mul(new Decimal(1 + (takerPlatformFeeRate + takerBrokerFeeRate))).round();
   } 
 
-  return new Decimal(price).mul(new Decimal(quantity)).mul(new Decimal(1 + (takerPlatformFeeRate + takerBrokerFeeRate))).mul(new Decimal(Math.pow(10, quoteTokenDecimal - tradeTokenDecimal)));
+  return new Decimal(price).mul(new Decimal(quantity)).mul(new Decimal(1 + (takerPlatformFeeRate + takerBrokerFeeRate))).mul(new Decimal(Math.pow(10, quoteTokenDecimal - tradeTokenDecimal))).round();
 }
 
 export function getBuyerFee(
@@ -126,10 +126,10 @@ export function getBuyerFee(
   quoteTokenDecimal: number): Decimal {
 
   if(tradeTokenDecimal == quoteTokenDecimal){
-    return new Decimal(price).mul(new Decimal(quantity)).mul(new Decimal(takerPlatformFeeRate + takerBrokerFeeRate));
+    return new Decimal(price).mul(new Decimal(quantity)).mul(new Decimal(takerPlatformFeeRate + takerBrokerFeeRate)).round();
   } 
 
-  return new Decimal(price).mul(new Decimal(quantity)).mul(new Decimal(takerPlatformFeeRate + takerBrokerFeeRate)).mul(new Decimal(Math.pow(10, quoteTokenDecimal- tradeTokenDecimal)));
+  return new Decimal(price).mul(new Decimal(quantity)).mul(new Decimal(takerPlatformFeeRate + takerBrokerFeeRate)).mul(new Decimal(Math.pow(10, quoteTokenDecimal- tradeTokenDecimal))).round();
 }
 
 export function getSellerObtainAmount(
@@ -141,10 +141,10 @@ export function getSellerObtainAmount(
   quoteTokenDecimal: number): Decimal {
 
   if (tradeTokenDecimal == quoteTokenDecimal) {
-    return new Decimal(price).mul(new Decimal(quantity)).mul(new Decimal(1 - (makerPlatformFeeRate + makerBrokerFeefeeRate)));
+    return new Decimal(price).mul(new Decimal(quantity)).mul(new Decimal(1 - (makerPlatformFeeRate + makerBrokerFeefeeRate))).round();
   } 
 
-  return new Decimal(price).mul(new Decimal(quantity)).mul(new Decimal(1 - (makerPlatformFeeRate + makerBrokerFeefeeRate))).mul(new Decimal(Math.pow(10, quoteTokenDecimal - tradeTokenDecimal)));
+  return new Decimal(price).mul(new Decimal(quantity)).mul(new Decimal(1 - (makerPlatformFeeRate + makerBrokerFeefeeRate))).mul(new Decimal(Math.pow(10, quoteTokenDecimal - tradeTokenDecimal))).round();
 }
 
 export function getSellerFee(
@@ -156,8 +156,8 @@ export function getSellerFee(
   quoteTokenDecimal: number): Decimal {
 
   if(tradeTokenDecimal == quoteTokenDecimal) {
-    return new Decimal(price).mul(new Decimal(quantity)).mul(new Decimal(makerPlatformFeeRate + makerBrokerFeefeeRate));
+    return new Decimal(price).mul(new Decimal(quantity)).mul(new Decimal(makerPlatformFeeRate + makerBrokerFeefeeRate)).round();
   } 
 
-  return  new Decimal(price).mul(new Decimal(quantity)).mul(new Decimal(makerPlatformFeeRate + makerBrokerFeefeeRate)).mul(new Decimal(Math.pow(10, quoteTokenDecimal- tradeTokenDecimal)));
+  return  new Decimal(price).mul(new Decimal(quantity)).mul(new Decimal(makerPlatformFeeRate + makerBrokerFeefeeRate)).mul(new Decimal(Math.pow(10, quoteTokenDecimal- tradeTokenDecimal))).round();
 }
