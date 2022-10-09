@@ -34,8 +34,8 @@ VTT/VITE: tradeTokenDecimal = quoteTokenDecimal
 #### case2
 VTT/BTC: tradeTokenDecimal > quoteTokenDecimal
 
-#### case3(@todo)
-VICAT/VITE: tradeTokenDecimal < quoteTokenDecimal
+#### case3
+WOW/VITE: tradeTokenDecimal < quoteTokenDecimal
 
 ### morecases
 #### case1 
@@ -48,19 +48,23 @@ VICAT/VITE: tradeTokenDecimal < quoteTokenDecimal
 
 #### case3
 1.seller: placeLimitOrder price:8000  qty: 6000000000000000000 (6)
+2.buyer:  placeMarketOrder price:0.25  qty: 6000000000000000000 (6)
+
+#### case4
+1.seller: placeLimitOrder price:8000  qty: 6000000000000000000 (6)
 2.buyer:  placeLimitOrder price:8000  qty: 6000000000000000000 (6)
 3.seller: placeLimitOrder price:9000  qty: 6000000000000000000 (6)
 4.buyer:  placeMarketOrder price:0.25  qty: 6000000000000000000 (6)
 
-#### case4
+#### case5
 1.buyer:  placeMarketOrder price:0.25  qty: 6000000000000000000 (6)
 
-#### case5(buyer has enough balance)
+#### case6(buyer has enough balance)
 1.seller: placeLimitOrder price:2000  qty: 6000000000000000000 (6)
 2.buyer:  placeLimitOrder price:3000  qty: 6000000000000000000 (6)
 4.buyer:  placeMarketOrder price:0.25  qty: 9000000000000000000 (9)
 
-#### case6(buyer don`t have enough balance)
+#### case7(buyer don`t have enough balance)
 1.seller: placeLimitOrder price:8000  qty: 6000000000000000000 (6)
 2.buyer:  placeLimitOrder price:9000  qty: 8000000000000000000 (8)
 4.buyer:  placeMarketOrder price:0.25  qty: 9000000000000000000 (14)

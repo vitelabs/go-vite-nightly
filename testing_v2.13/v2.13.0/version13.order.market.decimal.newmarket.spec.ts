@@ -166,7 +166,9 @@ describe("test version13 upgrade", () => {
 
     // place Limit orders
     const price1 = "8000"
-    const price2 = "800"
+    const price2 = "500"
+    // todo: can not pass
+    // const price2 = "9000"
     const price3 = "0.25"
     const quantity = "6000000"
     await dex.placeOrder(user1FundContract, tradeToken, quoteToken, sideSell, orderLimit, price1, quantity); // sell 6 WOW
