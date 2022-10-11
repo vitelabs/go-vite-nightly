@@ -40,20 +40,26 @@ WOW/VITE: tradeTokenDecimal < quoteTokenDecimal
 ### morecases
 #### case1 
 1.seller: placeLimitOrder price:8000  qty: 6000000000000000000 (6)
+
 2.buyer:  placeLimitOrder price:8000  qty: 6000000000000000000 (6)
 
 #### case2
 1.seller: placeLimitOrder price:8000  qty: 6000000000000000000 (6)
+
 2.buyer:  placeMarketOrder price:0.25  qty: 6000000000000000000 (6)
 
 #### case3
 1.seller: placeLimitOrder price:8000  qty: 6000000000000000000 (6)
+
 2.buyer:  placeMarketOrder price:0.25  qty: 6000000000000000000 (6)
 
 #### case4
 1.seller: placeLimitOrder price:8000  qty: 6000000000000000000 (6)
+
 2.buyer:  placeLimitOrder price:8000  qty: 6000000000000000000 (6)
+
 3.seller: placeLimitOrder price:9000  qty: 6000000000000000000 (6)
+
 4.buyer:  placeMarketOrder price:0.25  qty: 6000000000000000000 (6)
 
 #### case5
@@ -61,10 +67,31 @@ WOW/VITE: tradeTokenDecimal < quoteTokenDecimal
 
 #### case6(buyer has enough balance)
 1.seller: placeLimitOrder price:2000  qty: 6000000000000000000 (6)
+
 2.buyer:  placeLimitOrder price:3000  qty: 6000000000000000000 (6)
-4.buyer:  placeMarketOrder price:0.25  qty: 9000000000000000000 (9)
+
+3.buyer:  placeMarketOrder price:0.25  qty: 9000000000000000000 (9)
 
 #### case7(buyer don`t have enough balance)
 1.seller: placeLimitOrder price:8000  qty: 6000000000000000000 (6)
+
 2.buyer:  placeLimitOrder price:9000  qty: 8000000000000000000 (8)
-4.buyer:  placeMarketOrder price:0.25  qty: 9000000000000000000 (14)
+
+3.buyer:  placeMarketOrder price:0.25  qty: 9000000000000000000 (14)
+
+#### case8(seller with enough balance - place market order)
+1.buyer: placeLimitOrder price:8000  qty: 6000000000000000000 (6)
+
+2.seller: placeMarketOrder price:9000  qty: 6000000000000000000 (6)
+
+#### case9(seller place market order - fill all bids)
+1.buyer: placeLimitOrder price:800  qty: 6000000000000000000 (6)
+2.buyer: placeLimitOrder price:900  qty: 6000000000000000000 (6)
+
+2.seller: placeMarketOrder price:9000  qty: 20000000000000000000 (20)
+
+#### case10(seller with less balance - place market order)
+1.buyer: placeLimitOrder price:800  qty: 9000000000000000000 (6)
+2.buyer: placeLimitOrder price:900  qty: 6000000000000000000 (6)
+
+2.seller: placeMarketOrder price:9000  qty: 6000000000000000000 (8)
