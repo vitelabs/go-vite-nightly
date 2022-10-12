@@ -49,9 +49,9 @@ WOW/VITE: tradeTokenDecimal < quoteTokenDecimal
 2.buyer:  placeMarketOrder price:0.25  qty: 6000000000000000000 (6)
 
 #### case3
-1.seller: placeLimitOrder price:8000  qty: 6000000000000000000 (6)
+1.seller: placeLimitOrder price:8000  qty: 60000000000000000000 (60)
 
-2.buyer:  placeMarketOrder price:0.25  qty: 6000000000000000000 (6)
+2.buyer:  placeMarketOrder price:0.25  qty: 60000000000000000000 (60)
 
 #### case4
 1.seller: placeLimitOrder price:8000  qty: 6000000000000000000 (6)
