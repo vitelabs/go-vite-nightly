@@ -3,7 +3,7 @@ import { expect, assert } from "chai";
 import * as vuilder from "@vite/vuilder";
 import fundAbi from "../abi/fund.abi.json";
 import tradeAbi from "../abi/trade.abi.json";
-import Decimal from 'decimal.js';
+import Big from 'big.js';
 import { contractWithUser, initValue, randomUser } from "../utils/user";
 import * as dex from "../utils/dex";
 
@@ -121,14 +121,14 @@ describe("test version13 upgrade", () => {
     console.log("user1 balance after:", viteValue1_after, viteValueLocked1_after, vttValue1_after, vttValueLocked1_after);
     console.log("user2 balance after:", viteValue2_after, viteValueLocked2_after, vttValue2_after, vttValueLocked2_after);
 
-    const tradingQuantity = new Decimal(vttValue2_after).sub(new Decimal(vttValue2_before)).toFixed();
-    assert.equal(viteValue1_after, new Decimal(initViteAmount).add(dex.getSellerObtainAmount(price, tradingQuantity, makerPlatformFeeRate, makerBrokerFeeRate, tradeTokenDecimal, quoteTokenDecimal)).toFixed());
+    const tradingQuantity = new Big(vttValue2_after).sub(new Big(vttValue2_before)).toFixed();
+    assert.equal(viteValue1_after, new Big(initViteAmount).add(dex.getSellerObtainAmount(price, tradingQuantity, makerPlatformFeeRate, makerBrokerFeeRate, tradeTokenDecimal, quoteTokenDecimal)).toFixed());
     assert.equal(viteValueLocked1_after, "0");
-    assert.equal(vttValue1_after, new Decimal(initVttAmount).sub(new Decimal(tradingQuantity)).toFixed());
+    assert.equal(vttValue1_after, new Big(initVttAmount).sub(new Big(tradingQuantity)).toFixed());
     assert.equal(vttValueLocked1_after, "0");
-    assert.equal(viteValue2_after, (new Decimal(initViteAmount).sub(dex.getBuyerCostAmount(price, tradingQuantity, takerPlatformFeeRate, takerBrokerFeeRate, tradeTokenDecimal, quoteTokenDecimal))).toFixed());
+    assert.equal(viteValue2_after, (new Big(initViteAmount).sub(dex.getBuyerCostAmount(price, tradingQuantity, takerPlatformFeeRate, takerBrokerFeeRate, tradeTokenDecimal, quoteTokenDecimal))).toFixed());
     assert.equal(viteValueLocked2_after, "0");
-    assert.equal(vttValue2_after, new Decimal(initVttAmount).add(new Decimal(tradingQuantity)).toFixed());
+    assert.equal(vttValue2_after, new Big(initVttAmount).add(new Big(tradingQuantity)).toFixed());
     assert.equal(vttValueLocked2_after, "0");
 
     await dex.cancelAllOrders(provider, tradeToken, quoteToken, user1Address, user1TradeContract, user2TradeContract);
@@ -197,23 +197,23 @@ describe("test version13 upgrade", () => {
     console.log("user1 balance after:", viteValue1_after, viteValueLocked1_after, vttValue1_after, vttValueLocked1_after);
     console.log("user2 balance after:", viteValue2_after, viteValueLocked2_after, vttValue2_after, vttValueLocked2_after);
 
-    const tradingQuantityOfMarketOrder = new Decimal(quantity).sub(new Decimal(vttValueLocked1_after)).toFixed();
-    assert.equal(viteValue1_after, new Decimal(initViteAmount).add(dex.getSellerObtainAmount(price1, quantity, makerPlatformFeeRate, makerBrokerFeeRate, tradeTokenDecimal, quoteTokenDecimal)).toFixed());
+    const tradingQuantityOfMarketOrder = new Big(quantity).sub(new Big(vttValueLocked1_after)).toFixed();
+    assert.equal(viteValue1_after, new Big(initViteAmount).add(dex.getSellerObtainAmount(price1, quantity, makerPlatformFeeRate, makerBrokerFeeRate, tradeTokenDecimal, quoteTokenDecimal)).toFixed());
     assert.equal(viteValueLocked1_after, "0");
-    assert.equal(vttValue1_after, new Decimal(initVttAmount).sub(new Decimal(quantity)).toFixed());
-    assert.equal(vttValueLocked1_after, new Decimal(initVttAmount).add(new Decimal(quantity)).sub(new Decimal(vttValue2_after)));
+    assert.equal(vttValue1_after, new Big(initVttAmount).sub(new Big(quantity)).toFixed());
+    assert.equal(vttValueLocked1_after, new Big(initVttAmount).add(new Big(quantity)).sub(new Big(vttValue2_after)));
 
     // the total value of VTT hold by user1 and user2 must be 20w
-    assert.equal(new Decimal(initVttAmount).mul(2).toFixed(),
-      (new Decimal(vttValue1_after).add(new Decimal(vttValueLocked1_after)).add(new Decimal(vttValue2_after)).add(new Decimal(vttValueLocked2_after)).toFixed()));
+    assert.equal(new Big(initVttAmount).mul(2).toFixed(),
+      (new Big(vttValue1_after).add(new Big(vttValueLocked1_after)).add(new Big(vttValue2_after)).add(new Big(vttValueLocked2_after)).toFixed()));
 
     // the total value of VITE hold by user1 and user2 + the TradingFees must be 20w
     const totalFees = dex.getSellerFee(price1, quantity, makerPlatformFeeRate, makerBrokerFeeRate, tradeTokenDecimal, quoteTokenDecimal)
       .add(dex.getBuyerFee(price1, quantity, takerPlatformFeeRate, takerBrokerFeeRate, tradeTokenDecimal, quoteTokenDecimal)).toFixed();
 
-    assert.equal(new Decimal(initViteAmount).mul(2).toFixed(),
-      (new Decimal(viteValue1_after).add(new Decimal(viteValueLocked1_after)).add(new Decimal(viteValue2_after)).add(new Decimal(viteValueLocked2_after)
-        .add(new Decimal(totalFees))).toFixed()));
+    assert.equal(new Big(initViteAmount).mul(2).toFixed(),
+      (new Big(viteValue1_after).add(new Big(viteValueLocked1_after)).add(new Big(viteValue2_after)).add(new Big(viteValueLocked2_after)
+        .add(new Big(totalFees))).toFixed()));
 
     await dex.cancelAllOrders(provider, tradeToken, quoteToken, user1Address, user1TradeContract, user2TradeContract);
   });
@@ -281,23 +281,23 @@ describe("test version13 upgrade", () => {
     console.log("user1 balance after:", viteValue1_after, viteValueLocked1_after, vttValue1_after, vttValueLocked1_after);
     console.log("user2 balance after:", viteValue2_after, viteValueLocked2_after, vttValue2_after, vttValueLocked2_after);
 
-    const tradingQuantityOfMarketOrder = new Decimal(quantity).sub(new Decimal(vttValueLocked1_after)).toFixed();
-    assert.equal(viteValue1_after, new Decimal(initViteAmount).add(dex.getSellerObtainAmount(price1, tradingQuantityOfMarketOrder, makerPlatformFeeRate, makerBrokerFeeRate, tradeTokenDecimal, quoteTokenDecimal)).toFixed());
+    const tradingQuantityOfMarketOrder = new Big(quantity).sub(new Big(vttValueLocked1_after)).toFixed();
+    assert.equal(viteValue1_after, new Big(initViteAmount).add(dex.getSellerObtainAmount(price1, tradingQuantityOfMarketOrder, makerPlatformFeeRate, makerBrokerFeeRate, tradeTokenDecimal, quoteTokenDecimal)).toFixed());
     assert.equal(viteValueLocked1_after, "0");
-    assert.equal(vttValue1_after, new Decimal(initVttAmount).sub(new Decimal(quantity)).toFixed());
-    assert.equal(vttValueLocked1_after, new Decimal(initVttAmount).add(new Decimal(quantity)).sub(new Decimal(vttValue2_after)));
+    assert.equal(vttValue1_after, new Big(initVttAmount).sub(new Big(quantity)).toFixed());
+    assert.equal(vttValueLocked1_after, new Big(initVttAmount).add(new Big(quantity)).sub(new Big(vttValue2_after)));
 
     // the total value of VTT hold by user1 and user2 must be 20w
-    assert.equal(new Decimal(initVttAmount).mul(2).toFixed(),
-      (new Decimal(vttValue1_after).add(new Decimal(vttValueLocked1_after)).add(new Decimal(vttValue2_after)).add(new Decimal(vttValueLocked2_after)).toFixed()));
+    assert.equal(new Big(initVttAmount).mul(2).toFixed(),
+      (new Big(vttValue1_after).add(new Big(vttValueLocked1_after)).add(new Big(vttValue2_after)).add(new Big(vttValueLocked2_after)).toFixed()));
 
     // the total value of VITE hold by user1 and user2 + the TradingFees must be 20w
     const totalFees = dex.getSellerFee(price1, tradingQuantityOfMarketOrder, makerPlatformFeeRate, makerBrokerFeeRate, tradeTokenDecimal, quoteTokenDecimal)
       .add(dex.getBuyerFee(price1, tradingQuantityOfMarketOrder, takerPlatformFeeRate, takerBrokerFeeRate, tradeTokenDecimal, quoteTokenDecimal)).toFixed();
 
-    assert.equal(new Decimal(initViteAmount).mul(2).toFixed(),
-      (new Decimal(viteValue1_after).add(new Decimal(viteValueLocked1_after)).add(new Decimal(viteValue2_after)).add(new Decimal(viteValueLocked2_after)
-        .add(new Decimal(totalFees))).toFixed()));
+    assert.equal(new Big(initViteAmount).mul(2).toFixed(),
+      (new Big(viteValue1_after).add(new Big(viteValueLocked1_after)).add(new Big(viteValue2_after)).add(new Big(viteValueLocked2_after)
+        .add(new Big(totalFees))).toFixed()));
 
     await dex.cancelAllOrders(provider, tradeToken, quoteToken, user1Address, user1TradeContract, user2TradeContract);
   });
@@ -353,24 +353,24 @@ describe("test version13 upgrade", () => {
     console.log("user1 balance after:", viteValue1_after, viteValueLocked1_after, vttValue1_after, vttValueLocked1_after);
     console.log("user2 balance after:", viteValue2_after, viteValueLocked2_after, vttValue2_after, vttValueLocked2_after);
 
-    const tradingQuantityOfMarketOrder = new Decimal(quantity).sub(new Decimal(vttValueLocked1_after)).toFixed();
-    assert.equal(viteValue1_after, new Decimal(initViteAmount).add(dex.getSellerObtainAmount(price1, quantity, makerPlatformFeeRate, makerBrokerFeeRate, tradeTokenDecimal, quoteTokenDecimal))
+    const tradingQuantityOfMarketOrder = new Big(quantity).sub(new Big(vttValueLocked1_after)).toFixed();
+    assert.equal(viteValue1_after, new Big(initViteAmount).add(dex.getSellerObtainAmount(price1, quantity, makerPlatformFeeRate, makerBrokerFeeRate, tradeTokenDecimal, quoteTokenDecimal))
       .add(dex.getSellerObtainAmount(price2, tradingQuantityOfMarketOrder, makerPlatformFeeRate, makerBrokerFeeRate, tradeTokenDecimal, quoteTokenDecimal)).toFixed());
     assert.equal(viteValueLocked1_after, "0");
-    assert.equal(vttValue1_after, new Decimal(initVttAmount).sub(new Decimal(quantity)).sub(new Decimal(quantity)).toFixed());
-    assert.equal(vttValueLocked1_after, new Decimal(initVttAmount).add(new Decimal(quantity)).add(new Decimal(quantity)).sub(new Decimal(vttValue2_after)));
+    assert.equal(vttValue1_after, new Big(initVttAmount).sub(new Big(quantity)).sub(new Big(quantity)).toFixed());
+    assert.equal(vttValueLocked1_after, new Big(initVttAmount).add(new Big(quantity)).add(new Big(quantity)).sub(new Big(vttValue2_after)));
 
     // the total value of VTT hold by user1 and user2 must be 20w
-    assert.equal(new Decimal(initVttAmount).mul(2).toFixed(),
-      (new Decimal(vttValue1_after).add(new Decimal(vttValueLocked1_after)).add(new Decimal(vttValue2_after)).add(new Decimal(vttValueLocked2_after)).toFixed()));
+    assert.equal(new Big(initVttAmount).mul(2).toFixed(),
+      (new Big(vttValue1_after).add(new Big(vttValueLocked1_after)).add(new Big(vttValue2_after)).add(new Big(vttValueLocked2_after)).toFixed()));
 
     // the total value of VITE hold by user1 and user2 + the TradingFees must be 20w
     const totalFees = dex.getSellerFee(price1, quantity, makerPlatformFeeRate, makerBrokerFeeRate, tradeTokenDecimal, quoteTokenDecimal).add(dex.getBuyerFee(price1, quantity, takerPlatformFeeRate, takerBrokerFeeRate, tradeTokenDecimal, quoteTokenDecimal))
       .add(dex.getSellerFee(price2, tradingQuantityOfMarketOrder, makerPlatformFeeRate, makerBrokerFeeRate, tradeTokenDecimal, quoteTokenDecimal)).add(dex.getBuyerFee(price2, tradingQuantityOfMarketOrder, takerPlatformFeeRate, takerBrokerFeeRate, tradeTokenDecimal, quoteTokenDecimal)).toFixed();
 
-    assert.equal(new Decimal(initViteAmount).mul(2).toFixed(),
-      (new Decimal(viteValue1_after).add(new Decimal(viteValueLocked1_after)).add(new Decimal(viteValue2_after)).add(new Decimal(viteValueLocked2_after)
-        .add(new Decimal(totalFees))).toFixed()));
+    assert.equal(new Big(initViteAmount).mul(2).toFixed(),
+      (new Big(viteValue1_after).add(new Big(viteValueLocked1_after)).add(new Big(viteValue2_after)).add(new Big(viteValueLocked2_after)
+        .add(new Big(totalFees))).toFixed()));
 
     await dex.cancelAllOrders(provider, tradeToken, quoteToken, user1Address, user1TradeContract, user2TradeContract);
   });
@@ -496,25 +496,25 @@ describe("test version13 upgrade", () => {
     console.log("user1 balance after:", viteValue1_after, viteValueLocked1_after, vttValue1_after, vttValueLocked1_after);
     console.log("user2 balance after:", viteValue2_after, viteValueLocked2_after, vttValue2_after, vttValueLocked2_after);
 
-    assert.equal(viteValue1_after, new Decimal(initViteAmount).add(dex.getSellerObtainAmount(price1, quantity1, makerPlatformFeeRate, makerBrokerFeeRate, tradeTokenDecimal, quoteTokenDecimal))
-      .add(dex.getSellerObtainAmount(price2, (new Decimal(quantity2).sub(new Decimal(vttValueLocked1_after))).toFixed(), makerPlatformFeeRate, makerBrokerFeeRate, tradeTokenDecimal, quoteTokenDecimal)).toFixed());
+    assert.equal(viteValue1_after, new Big(initViteAmount).add(dex.getSellerObtainAmount(price1, quantity1, makerPlatformFeeRate, makerBrokerFeeRate, tradeTokenDecimal, quoteTokenDecimal))
+      .add(dex.getSellerObtainAmount(price2, (new Big(quantity2).sub(new Big(vttValueLocked1_after))).toFixed(), makerPlatformFeeRate, makerBrokerFeeRate, tradeTokenDecimal, quoteTokenDecimal)).toFixed());
     assert.equal(viteValueLocked1_after, "0");
-    assert.equal(vttValue1_after, new Decimal(initVttAmount).sub(new Decimal(quantity1)).sub(new Decimal(quantity2)).toFixed());
-    assert.equal(vttValueLocked1_after, new Decimal(initVttAmount).add(new Decimal(quantity1)).add(new Decimal(quantity2)).sub(new Decimal(vttValue2_after)));
+    assert.equal(vttValue1_after, new Big(initVttAmount).sub(new Big(quantity1)).sub(new Big(quantity2)).toFixed());
+    assert.equal(vttValueLocked1_after, new Big(initVttAmount).add(new Big(quantity1)).add(new Big(quantity2)).sub(new Big(vttValue2_after)));
 
     // the total value of VTT hold by user1 and user2 must be 20w
-    assert.equal(new Decimal(initVttAmount).mul(2).toFixed(),
-      (new Decimal(vttValue1_after).add(new Decimal(vttValueLocked1_after)).add(new Decimal(vttValue2_after)).add(new Decimal(vttValueLocked2_after)).toFixed()));
+    assert.equal(new Big(initVttAmount).mul(2).toFixed(),
+      (new Big(vttValue1_after).add(new Big(vttValueLocked1_after)).add(new Big(vttValue2_after)).add(new Big(vttValueLocked2_after)).toFixed()));
 
     // the total value of VITE hold by user1 and user2 + the TradingFees must be 20w
     const totalFees = dex.getSellerFee(price1, quantity1, makerPlatformFeeRate, makerBrokerFeeRate, tradeTokenDecimal, quoteTokenDecimal)
       .add(dex.getBuyerFee(price1, quantity1, takerPlatformFeeRate, takerBrokerFeeRate, tradeTokenDecimal, quoteTokenDecimal))
-      .add(dex.getSellerFee(price2, (new Decimal(quantity2).sub(new Decimal(vttValueLocked1_after))).toFixed(), makerPlatformFeeRate, makerBrokerFeeRate, tradeTokenDecimal, quoteTokenDecimal))
-      .add(dex.getBuyerFee(price2, (new Decimal(quantity2).sub(new Decimal(vttValueLocked1_after))).toFixed(), takerPlatformFeeRate, takerBrokerFeeRate, tradeTokenDecimal, quoteTokenDecimal)).toFixed();
+      .add(dex.getSellerFee(price2, (new Big(quantity2).sub(new Big(vttValueLocked1_after))).toFixed(), makerPlatformFeeRate, makerBrokerFeeRate, tradeTokenDecimal, quoteTokenDecimal))
+      .add(dex.getBuyerFee(price2, (new Big(quantity2).sub(new Big(vttValueLocked1_after))).toFixed(), takerPlatformFeeRate, takerBrokerFeeRate, tradeTokenDecimal, quoteTokenDecimal)).toFixed();
 
-    assert.equal(new Decimal(initViteAmount).mul(2).toFixed(),
-      (new Decimal(viteValue1_after).add(new Decimal(viteValueLocked1_after)).add(new Decimal(viteValue2_after)).add(new Decimal(viteValueLocked2_after)
-        .add(new Decimal(totalFees))).toFixed()));
+    assert.equal(new Big(initViteAmount).mul(2).toFixed(),
+      (new Big(viteValue1_after).add(new Big(viteValueLocked1_after)).add(new Big(viteValue2_after)).add(new Big(viteValueLocked2_after)
+        .add(new Big(totalFees))).toFixed()));
 
     await dex.cancelAllOrders(provider, tradeToken, quoteToken, user1Address, user1TradeContract, user2TradeContract);
   });
@@ -571,25 +571,25 @@ describe("test version13 upgrade", () => {
     console.log("user1 balance after:", viteValue1_after, viteValueLocked1_after, vttValue1_after, vttValueLocked1_after);
     console.log("user2 balance after:", viteValue2_after, viteValueLocked2_after, vttValue2_after, vttValueLocked2_after);
 
-    assert.equal(viteValue1_after, new Decimal(initViteAmount).add(dex.getSellerObtainAmount(price1, quantity1, makerPlatformFeeRate, makerBrokerFeeRate, tradeTokenDecimal, quoteTokenDecimal))
-      .add(dex.getSellerObtainAmount(price2, (new Decimal(quantity2).sub(new Decimal(vttValueLocked1_after))).toFixed(), makerPlatformFeeRate, makerBrokerFeeRate, tradeTokenDecimal, quoteTokenDecimal)).toFixed());
+    assert.equal(viteValue1_after, new Big(initViteAmount).add(dex.getSellerObtainAmount(price1, quantity1, makerPlatformFeeRate, makerBrokerFeeRate, tradeTokenDecimal, quoteTokenDecimal))
+      .add(dex.getSellerObtainAmount(price2, (new Big(quantity2).sub(new Big(vttValueLocked1_after))).toFixed(), makerPlatformFeeRate, makerBrokerFeeRate, tradeTokenDecimal, quoteTokenDecimal)).toFixed());
     assert.equal(viteValueLocked1_after, "0");
-    assert.equal(vttValue1_after, new Decimal(initVttAmount).sub(new Decimal(quantity1)).sub(new Decimal(quantity2)).toFixed());
-    assert.equal(vttValueLocked1_after, new Decimal(initVttAmount).add(new Decimal(quantity1)).add(new Decimal(quantity2)).sub(new Decimal(vttValue2_after)));
+    assert.equal(vttValue1_after, new Big(initVttAmount).sub(new Big(quantity1)).sub(new Big(quantity2)).toFixed());
+    assert.equal(vttValueLocked1_after, new Big(initVttAmount).add(new Big(quantity1)).add(new Big(quantity2)).sub(new Big(vttValue2_after)));
 
     // the total value of VTT hold by user1 and user2 must be 20w
-    assert.equal(new Decimal(initVttAmount).mul(2).toFixed(),
-      (new Decimal(vttValue1_after).add(new Decimal(vttValueLocked1_after)).add(new Decimal(vttValue2_after)).add(new Decimal(vttValueLocked2_after)).toFixed()));
+    assert.equal(new Big(initVttAmount).mul(2).toFixed(),
+      (new Big(vttValue1_after).add(new Big(vttValueLocked1_after)).add(new Big(vttValue2_after)).add(new Big(vttValueLocked2_after)).toFixed()));
 
     // the total value of VITE hold by user1 and user2 + the TradingFees must be 20w
     const totalFees = dex.getSellerFee(price1, quantity1, makerPlatformFeeRate, makerBrokerFeeRate, tradeTokenDecimal, quoteTokenDecimal)
       .add(dex.getBuyerFee(price1, quantity1, takerPlatformFeeRate, takerBrokerFeeRate, tradeTokenDecimal, quoteTokenDecimal))
-      .add(dex.getSellerFee(price2, (new Decimal(quantity2).sub(new Decimal(vttValueLocked1_after))).toFixed(), makerPlatformFeeRate, makerBrokerFeeRate, tradeTokenDecimal, quoteTokenDecimal))
-      .add(dex.getBuyerFee(price2, (new Decimal(quantity2).sub(new Decimal(vttValueLocked1_after))).toFixed(), takerPlatformFeeRate, takerBrokerFeeRate, tradeTokenDecimal, quoteTokenDecimal)).toFixed();
+      .add(dex.getSellerFee(price2, (new Big(quantity2).sub(new Big(vttValueLocked1_after))).toFixed(), makerPlatformFeeRate, makerBrokerFeeRate, tradeTokenDecimal, quoteTokenDecimal))
+      .add(dex.getBuyerFee(price2, (new Big(quantity2).sub(new Big(vttValueLocked1_after))).toFixed(), takerPlatformFeeRate, takerBrokerFeeRate, tradeTokenDecimal, quoteTokenDecimal)).toFixed();
 
-    assert.equal(new Decimal(initViteAmount).mul(2).toFixed(),
-      (new Decimal(viteValue1_after).add(new Decimal(viteValueLocked1_after)).add(new Decimal(viteValue2_after)).add(new Decimal(viteValueLocked2_after)
-        .add(new Decimal(totalFees))).toFixed()));
+    assert.equal(new Big(initViteAmount).mul(2).toFixed(),
+      (new Big(viteValue1_after).add(new Big(viteValueLocked1_after)).add(new Big(viteValue2_after)).add(new Big(viteValueLocked2_after)
+        .add(new Big(totalFees))).toFixed()));
 
     await dex.cancelAllOrders(provider, tradeToken, quoteToken, user1Address, user1TradeContract, user2TradeContract);
   });
@@ -657,23 +657,23 @@ describe("test version13 upgrade", () => {
     console.log("user1 balance after:", viteValue1_after, viteValueLocked1_after, vttValue1_after, vttValueLocked1_after);
     console.log("user2 balance after:", viteValue2_after, viteValueLocked2_after, vttValue2_after, vttValueLocked2_after);
 
-    const executeQuantity = new Decimal(initVttAmount).sub(new Decimal(vttValue2_after)).toFixed();
-    assert.equal(viteValue2_after, new Decimal(initViteAmount).add(dex.getSellerObtainAmount(price1, executeQuantity, makerPlatformFeeRate, makerBrokerFeeRate, tradeTokenDecimal, quoteTokenDecimal)).toFixed());
+    const executeQuantity = new Big(initVttAmount).sub(new Big(vttValue2_after)).toFixed();
+    assert.equal(viteValue2_after, new Big(initViteAmount).add(dex.getSellerObtainAmount(price1, executeQuantity, makerPlatformFeeRate, makerBrokerFeeRate, tradeTokenDecimal, quoteTokenDecimal)).toFixed());
     assert.equal(viteValueLocked2_after, "0");
-    assert.equal(vttValue2_after, new Decimal(initVttAmount).sub(new Decimal(quantity)).toFixed());
+    assert.equal(vttValue2_after, new Big(initVttAmount).sub(new Big(quantity)).toFixed());
     assert.equal(vttValueLocked2_after, "0");
 
     // the total value of VTT hold by user1 and user2 must be 20w
-    assert.equal(new Decimal(initVttAmount).mul(2).toFixed(),
-      (new Decimal(vttValue1_after).add(new Decimal(vttValueLocked1_after)).add(new Decimal(vttValue2_after)).add(new Decimal(vttValueLocked2_after)).toFixed()));
+    assert.equal(new Big(initVttAmount).mul(2).toFixed(),
+      (new Big(vttValue1_after).add(new Big(vttValueLocked1_after)).add(new Big(vttValue2_after)).add(new Big(vttValueLocked2_after)).toFixed()));
 
     // the total value of VITE hold by user1 and user2 + the TradingFees must be 20w
     const totalFees = dex.getSellerFee(price1, quantity, makerPlatformFeeRate, makerBrokerFeeRate, tradeTokenDecimal, quoteTokenDecimal)
       .add(dex.getBuyerFee(price1, quantity, takerPlatformFeeRate, takerBrokerFeeRate, tradeTokenDecimal, quoteTokenDecimal)).toFixed();
 
-    assert.equal(new Decimal(initViteAmount).mul(2).toFixed(),
-      (new Decimal(viteValue1_after).add(new Decimal(viteValueLocked1_after)).add(new Decimal(viteValue2_after)).add(new Decimal(viteValueLocked2_after)
-        .add(new Decimal(totalFees))).toFixed()));
+    assert.equal(new Big(initViteAmount).mul(2).toFixed(),
+      (new Big(viteValue1_after).add(new Big(viteValueLocked1_after)).add(new Big(viteValue2_after)).add(new Big(viteValueLocked2_after)
+        .add(new Big(totalFees))).toFixed()));
 
     await dex.cancelAllOrders(provider, tradeToken, quoteToken, user1Address, user1TradeContract, user2TradeContract);
   });
@@ -744,15 +744,15 @@ describe("test version13 upgrade", () => {
     console.log("user1 balance after:", viteValue1_after, viteValueLocked1_after, vttValue1_after, vttValueLocked1_after);
     console.log("user2 balance after:", viteValue2_after, viteValueLocked2_after, vttValue2_after, vttValueLocked2_after);
 
-    assert.equal(viteValue2_after, new Decimal(initViteAmount).add(dex.getSellerObtainAmount(price1, quantity, makerPlatformFeeRate, makerBrokerFeeRate, tradeTokenDecimal, quoteTokenDecimal))
+    assert.equal(viteValue2_after, new Big(initViteAmount).add(dex.getSellerObtainAmount(price1, quantity, makerPlatformFeeRate, makerBrokerFeeRate, tradeTokenDecimal, quoteTokenDecimal))
       .add(dex.getSellerObtainAmount(price2, quantity, makerPlatformFeeRate, makerBrokerFeeRate, tradeTokenDecimal, quoteTokenDecimal)).toFixed());
     assert.equal(viteValueLocked2_after, "0");
-    assert.equal(vttValue2_after, new Decimal(initVttAmount).sub(new Decimal(quantity).mul(2)).toFixed());
+    assert.equal(vttValue2_after, new Big(initVttAmount).sub(new Big(quantity).mul(2)).toFixed());
     assert.equal(vttValueLocked2_after, "0");
 
     // the total value of VTT hold by user1 and user2 must be 20w
-    assert.equal(new Decimal(initVttAmount).mul(2).toFixed(),
-      (new Decimal(vttValue1_after).add(new Decimal(vttValueLocked1_after)).add(new Decimal(vttValue2_after)).add(new Decimal(vttValueLocked2_after)).toFixed()));
+    assert.equal(new Big(initVttAmount).mul(2).toFixed(),
+      (new Big(vttValue1_after).add(new Big(vttValueLocked1_after)).add(new Big(vttValue2_after)).add(new Big(vttValueLocked2_after)).toFixed()));
 
     // the total value of VITE hold by user1 and user2 + the TradingFees must be 20w
     const totalFees = dex.getSellerFee(price1, quantity, makerPlatformFeeRate, makerBrokerFeeRate, tradeTokenDecimal, quoteTokenDecimal)
@@ -761,9 +761,9 @@ describe("test version13 upgrade", () => {
       .add(dex.getBuyerFee(price2, quantity, makerPlatformFeeRate, makerBrokerFeeRate, tradeTokenDecimal, quoteTokenDecimal))
       .toFixed()
 
-    assert.equal(new Decimal(initViteAmount).mul(2).toFixed(),
-      (new Decimal(viteValue1_after).add(new Decimal(viteValueLocked1_after)).add(new Decimal(viteValue2_after)).add(new Decimal(viteValueLocked2_after)
-        .add(new Decimal(totalFees))).toFixed()));
+    assert.equal(new Big(initViteAmount).mul(2).toFixed(),
+      (new Big(viteValue1_after).add(new Big(viteValueLocked1_after)).add(new Big(viteValue2_after)).add(new Big(viteValueLocked2_after)
+        .add(new Big(totalFees))).toFixed()));
 
     await dex.cancelAllOrders(provider, tradeToken, quoteToken, user1Address, user1TradeContract, user2TradeContract);
   });
@@ -834,16 +834,16 @@ describe("test version13 upgrade", () => {
     console.log("user1 balance after:", viteValue1_after, viteValueLocked1_after, vttValue1_after, vttValueLocked1_after);
     console.log("user2 balance after:", viteValue2_after, viteValueLocked2_after, vttValue2_after, vttValueLocked2_after);
 
-    const partlyExecutedQuantity = new Decimal(quantityMarketSell).sub(new Decimal(quantity)).toFixed();
-    assert.equal(viteValue2_after, new Decimal(initViteAmount).add(dex.getSellerObtainAmount(price2, quantity, makerPlatformFeeRate, makerBrokerFeeRate, tradeTokenDecimal, quoteTokenDecimal))
+    const partlyExecutedQuantity = new Big(quantityMarketSell).sub(new Big(quantity)).toFixed();
+    assert.equal(viteValue2_after, new Big(initViteAmount).add(dex.getSellerObtainAmount(price2, quantity, makerPlatformFeeRate, makerBrokerFeeRate, tradeTokenDecimal, quoteTokenDecimal))
       .add(dex.getSellerObtainAmount(price1, partlyExecutedQuantity, makerPlatformFeeRate, makerBrokerFeeRate, tradeTokenDecimal, quoteTokenDecimal)).toFixed());
     assert.equal(viteValueLocked2_after, "0");
-    assert.equal(vttValue2_after, new Decimal(initVttAmount).sub(new Decimal(quantityMarketSell)).toFixed());
+    assert.equal(vttValue2_after, new Big(initVttAmount).sub(new Big(quantityMarketSell)).toFixed());
     assert.equal(vttValueLocked2_after, "0");
 
     // the total value of VTT hold by user1 and user2 must be 20w
-    assert.equal(new Decimal(initVttAmount).mul(2).toFixed(),
-      (new Decimal(vttValue1_after).add(new Decimal(vttValueLocked1_after)).add(new Decimal(vttValue2_after)).add(new Decimal(vttValueLocked2_after)).toFixed()));
+    assert.equal(new Big(initVttAmount).mul(2).toFixed(),
+      (new Big(vttValue1_after).add(new Big(vttValueLocked1_after)).add(new Big(vttValue2_after)).add(new Big(vttValueLocked2_after)).toFixed()));
 
     // the total value of VITE hold by user1 and user2 + the TradingFees must be 20w
     const totalFees = dex.getSellerFee(price1, partlyExecutedQuantity, makerPlatformFeeRate, makerBrokerFeeRate, tradeTokenDecimal, quoteTokenDecimal)
@@ -852,9 +852,9 @@ describe("test version13 upgrade", () => {
       .add(dex.getBuyerFee(price2, quantity, makerPlatformFeeRate, makerBrokerFeeRate, tradeTokenDecimal, quoteTokenDecimal))
       .toFixed()
 
-    assert.equal(new Decimal(initViteAmount).mul(2).toFixed(),
-      (new Decimal(viteValue1_after).add(new Decimal(viteValueLocked1_after)).add(new Decimal(viteValue2_after)).add(new Decimal(viteValueLocked2_after)
-        .add(new Decimal(totalFees))).toFixed()));
+    assert.equal(new Big(initViteAmount).mul(2).toFixed(),
+      (new Big(viteValue1_after).add(new Big(viteValueLocked1_after)).add(new Big(viteValue2_after)).add(new Big(viteValueLocked2_after)
+        .add(new Big(totalFees))).toFixed()));
 
     await dex.cancelAllOrders(provider, tradeToken, quoteToken, user1Address, user1TradeContract, user2TradeContract);
   });

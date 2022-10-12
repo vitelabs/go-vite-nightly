@@ -1,7 +1,7 @@
 import { assert } from "chai";
 import { wallet } from "@vite/vitejs";
 import * as vuilder from "@vite/vuilder";
-import Decimal from 'decimal.js';
+import Big from 'big.js';
 
 export async function depositToFund(userFundContract: vuilder.Contract, initAmount: string, tokenId: string = "tti_5649544520544f4b454e6e40") {
   await userFundContract.call("DexFundUserDeposit", [], {
@@ -108,13 +108,13 @@ export function getBuyerCostAmount(
   takerPlatformFeeRate: number,
   takerBrokerFeeRate: number,
   tradeTokenDecimal: number, 
-  quoteTokenDecimal: number): Decimal {
+  quoteTokenDecimal: number): Big {
   
   if(tradeTokenDecimal == quoteTokenDecimal) {
-    return new Decimal(price).mul(new Decimal(quantity)).mul(new Decimal(1 + (takerPlatformFeeRate + takerBrokerFeeRate))).round();
+    return new Big(price).mul(new Big(quantity)).mul(new Big(1 + (takerPlatformFeeRate + takerBrokerFeeRate))).round();
   } 
 
-  return new Decimal(price).mul(new Decimal(quantity)).mul(new Decimal(1 + (takerPlatformFeeRate + takerBrokerFeeRate))).mul(new Decimal(Math.pow(10, quoteTokenDecimal - tradeTokenDecimal))).round();
+  return new Big(price).mul(new Big(quantity)).mul(new Big(1 + (takerPlatformFeeRate + takerBrokerFeeRate))).mul(new Big(Math.pow(10, quoteTokenDecimal - tradeTokenDecimal))).round();
 }
 
 export function getBuyerFee(
@@ -123,13 +123,13 @@ export function getBuyerFee(
   takerPlatformFeeRate: number,
   takerBrokerFeeRate: number,
   tradeTokenDecimal: number, 
-  quoteTokenDecimal: number): Decimal {
+  quoteTokenDecimal: number): Big {
 
   if(tradeTokenDecimal == quoteTokenDecimal){
-    return new Decimal(price).mul(new Decimal(quantity)).mul(new Decimal(takerPlatformFeeRate + takerBrokerFeeRate)).round();
+    return new Big(price).mul(new Big(quantity)).mul(new Big(takerPlatformFeeRate + takerBrokerFeeRate)).round();
   } 
 
-  return new Decimal(price).mul(new Decimal(quantity)).mul(new Decimal(takerPlatformFeeRate + takerBrokerFeeRate)).mul(new Decimal(Math.pow(10, quoteTokenDecimal- tradeTokenDecimal))).round();
+  return new Big(price).mul(new Big(quantity)).mul(new Big(takerPlatformFeeRate + takerBrokerFeeRate)).mul(new Big(Math.pow(10, quoteTokenDecimal- tradeTokenDecimal))).round();
 }
 
 export function getSellerObtainAmount(
@@ -138,13 +138,13 @@ export function getSellerObtainAmount(
   makerPlatformFeeRate: number,
   makerBrokerFeefeeRate: number,
   tradeTokenDecimal: number, 
-  quoteTokenDecimal: number): Decimal {
+  quoteTokenDecimal: number): Big {
 
   if (tradeTokenDecimal == quoteTokenDecimal) {
-    return new Decimal(price).mul(new Decimal(quantity)).mul(new Decimal(1 - (makerPlatformFeeRate + makerBrokerFeefeeRate))).round();
+    return new Big(price).mul(new Big(quantity)).mul(new Big(1 - (makerPlatformFeeRate + makerBrokerFeefeeRate))).round();
   } 
 
-  return new Decimal(price).mul(new Decimal(quantity)).mul(new Decimal(1 - (makerPlatformFeeRate + makerBrokerFeefeeRate))).mul(new Decimal(Math.pow(10, quoteTokenDecimal - tradeTokenDecimal))).round();
+  return new Big(price).mul(new Big(quantity)).mul(new Big(1 - (makerPlatformFeeRate + makerBrokerFeefeeRate))).mul(new Big(Math.pow(10, quoteTokenDecimal - tradeTokenDecimal))).round();
 }
 
 export function getSellerFee(
@@ -153,11 +153,11 @@ export function getSellerFee(
   makerPlatformFeeRate: number,
   makerBrokerFeefeeRate: number,
   tradeTokenDecimal: number, 
-  quoteTokenDecimal: number): Decimal {
+  quoteTokenDecimal: number): Big {
 
   if(tradeTokenDecimal == quoteTokenDecimal) {
-    return new Decimal(price).mul(new Decimal(quantity)).mul(new Decimal(makerPlatformFeeRate + makerBrokerFeefeeRate)).round();
+    return new Big(price).mul(new Big(quantity)).mul(new Big(makerPlatformFeeRate + makerBrokerFeefeeRate)).round();
   } 
 
-  return  new Decimal(price).mul(new Decimal(quantity)).mul(new Decimal(makerPlatformFeeRate + makerBrokerFeefeeRate)).mul(new Decimal(Math.pow(10, quoteTokenDecimal- tradeTokenDecimal))).round();
+  return  new Big(price).mul(new Big(quantity)).mul(new Big(makerPlatformFeeRate + makerBrokerFeefeeRate)).mul(new Big(Math.pow(10, quoteTokenDecimal- tradeTokenDecimal))).round();
 }
