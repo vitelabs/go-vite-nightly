@@ -859,6 +859,101 @@ describe("test version13 upgrade", () => {
     await dex.cancelAllOrders(provider, tradeToken, quoteToken, user1Address, user1TradeContract, user2TradeContract);
   });
 
+  it("test FundContract placeOrder - MarketOrder - Seller as taker - with just a little more quantity", async () => {
+    const initViteAmount = "100000000000000000000000"; // 10w VITE
+    const initVttAmount = "100000000000000000000000";  // 10w VTT
+
+    const user1 = randomUser(provider); // seller
+    const user2 = randomUser(provider); // buyer
+    const user1Address = user1.address;
+    const user2Address = user2.address;
+    console.log(`random user1 ${user1.address}`)
+    console.log(`random user2 ${user2.address}`)
+    const user1FundContract = contractWithUser(user1, fundAbi, fundContractAddress);
+    const user2FundContract = contractWithUser(user2, fundAbi, fundContractAddress);
+    const user1TradeContract = contractWithUser(user1, tradeAbi, tradeContractAddress);
+    const user2TradeContract = contractWithUser(user2, tradeAbi, tradeContractAddress);
+
+    await initValue(deployer, user1, initVttAmount, tradeToken);
+    await initValue(deployer, user1, initViteAmount);
+    await initValue(deployer, user2, initVttAmount, tradeToken);
+    await initValue(deployer, user2, initViteAmount);
+
+    await dex.depositToFund(user1FundContract, initViteAmount);
+    await dex.depositToFund(user1FundContract, initVttAmount, tradeToken);
+    await dex.depositToFund(user2FundContract, initViteAmount);
+    await dex.depositToFund(user2FundContract, initViteAmount, tradeToken);
+
+    const quoteBalanceUser1_before = await dex.getFundBalanceByAddrAndTokenId(provider, user1Address, quoteToken);
+    const tradeBalanceUser1_before = await dex.getFundBalanceByAddrAndTokenId(provider, user1Address, tradeToken);
+    const quoteBalanceUser2_before = await dex.getFundBalanceByAddrAndTokenId(provider, user2Address, quoteToken);
+    const tradeBalanceUser2_before = await dex.getFundBalanceByAddrAndTokenId(provider, user2Address, tradeToken);
+    const viteValue1_before = quoteBalanceUser1_before[quoteToken].available;
+    const viteValueLocked1_before = quoteBalanceUser1_before[quoteToken].locked;
+    const vttValue1_before = tradeBalanceUser1_before[tradeToken].available;
+    const vttValueLocked1_before = tradeBalanceUser1_before[tradeToken].locked;
+    const viteValue2_before = quoteBalanceUser2_before[quoteToken].available;
+    const viteValueLocked2_before = quoteBalanceUser2_before[quoteToken].locked;
+    const vttValue2_before = tradeBalanceUser2_before[tradeToken].available;
+    const vttValueLocked2_before = tradeBalanceUser2_before[tradeToken].locked;
+    console.log("user1 balance before", viteValue1_before, viteValueLocked1_before, vttValue1_before, vttValueLocked1_before);
+    console.log("user2 balance before", viteValue2_before, viteValueLocked2_before, vttValue2_before, vttValueLocked2_before);
+
+    // place Limit orders
+    const price1 = "8000"
+    const price2 = "6000"
+    const price3 = "5000"
+    const price4 = "200"
+    const quantity = "6000000000000000000"
+    const quantity1 = "60000000000000000"
+    const quantity2 = "1000000000000000000"
+    const quantityMarketSell = "6060000000000000000"
+    await dex.placeOrder(user1FundContract, tradeToken, quoteToken, sideBuy, orderLimit, price1, quantity); // buy 6 VTT
+    await dex.placeOrder(user1FundContract, tradeToken, quoteToken, sideBuy, orderLimit, price2, quantity1); // buy 0.06 VTT
+    await dex.placeOrder(user1FundContract, tradeToken, quoteToken, sideBuy, orderLimit, price3, quantity2); // buy 1 VTT
+    await dex.placeOrder(user2FundContract, tradeToken, quoteToken, sideSell, orderMarket, price4, quantityMarketSell); // sell 6.06 VTT
+
+    const quoteBalanceUser1_after = await dex.getFundBalanceByAddrAndTokenId(provider, user1Address, quoteToken);
+    const tradeBalanceUser1_after = await dex.getFundBalanceByAddrAndTokenId(provider, user1Address, tradeToken);
+    const quoteBalanceUser2_after = await dex.getFundBalanceByAddrAndTokenId(provider, user2Address, quoteToken);
+    const tradeBalanceUser2_after = await dex.getFundBalanceByAddrAndTokenId(provider, user2Address, tradeToken);
+
+    const viteValue1_after = quoteBalanceUser1_after[quoteToken].available;
+    const viteValueLocked1_after = quoteBalanceUser1_after[quoteToken].locked;
+    const vttValue1_after = tradeBalanceUser1_after[tradeToken].available;
+    const vttValueLocked1_after = tradeBalanceUser1_after[tradeToken].locked;
+    const viteValue2_after = quoteBalanceUser2_after[quoteToken].available;
+    const viteValueLocked2_after = quoteBalanceUser2_after[quoteToken].locked;
+    const vttValue2_after = tradeBalanceUser2_after[tradeToken].available;
+    const vttValueLocked2_after = tradeBalanceUser2_after[tradeToken].locked;
+    console.log("user1 balance after:", viteValue1_after, viteValueLocked1_after, vttValue1_after, vttValueLocked1_after);
+    console.log("user2 balance after:", viteValue2_after, viteValueLocked2_after, vttValue2_after, vttValueLocked2_after);
+
+    const partlyExecutedQuantity = new Big(quantityMarketSell).sub(new Big(quantity)).toFixed();
+    assert.equal(viteValue2_after, new Big(initViteAmount).add(dex.getSellerObtainAmount(price1, quantity, makerPlatformFeeRate, makerBrokerFeeRate, tradeTokenDecimal, quoteTokenDecimal))
+      .add(dex.getSellerObtainAmount(price2, partlyExecutedQuantity, makerPlatformFeeRate, makerBrokerFeeRate, tradeTokenDecimal, quoteTokenDecimal)).toFixed());
+    assert.equal(viteValueLocked2_after, "0");
+    assert.equal(vttValue2_after, new Big(initVttAmount).sub(new Big(quantityMarketSell)).toFixed());
+    assert.equal(vttValueLocked2_after, "0");
+
+    // the total value of VTT hold by user1 and user2 must be 20w
+    assert.equal(new Big(initVttAmount).mul(2).toFixed(),
+      (new Big(vttValue1_after).add(new Big(vttValueLocked1_after)).add(new Big(vttValue2_after)).add(new Big(vttValueLocked2_after)).toFixed()));
+
+    // the total value of VITE hold by user1 and user2 + the TradingFees must be 20w
+    const totalFees = dex.getSellerFee(price2, partlyExecutedQuantity, makerPlatformFeeRate, makerBrokerFeeRate, tradeTokenDecimal, quoteTokenDecimal)
+      .add(dex.getBuyerFee(price2, partlyExecutedQuantity, takerPlatformFeeRate, takerBrokerFeeRate, tradeTokenDecimal, quoteTokenDecimal))
+      .add(dex.getSellerFee(price1, quantity, makerPlatformFeeRate, makerBrokerFeeRate, tradeTokenDecimal, quoteTokenDecimal))
+      .add(dex.getBuyerFee(price1, quantity, makerPlatformFeeRate, makerBrokerFeeRate, tradeTokenDecimal, quoteTokenDecimal))
+      .toFixed()
+
+    assert.equal(new Big(initViteAmount).mul(2).toFixed(),
+      (new Big(viteValue1_after).add(new Big(viteValueLocked1_after)).add(new Big(viteValue2_after)).add(new Big(viteValueLocked2_after)
+        .add(new Big(totalFees))).toFixed()));
+
+    await dex.cancelAllOrders(provider, tradeToken, quoteToken, user1Address, user1TradeContract, user2TradeContract);
+  });
+
 });
 
 

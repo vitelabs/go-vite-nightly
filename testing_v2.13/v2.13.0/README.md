@@ -79,19 +79,30 @@ WOW/VITE: tradeTokenDecimal < quoteTokenDecimal
 
 3.buyer:  placeMarketOrder price:0.25  qty: 9000000000000000000 (14)
 
-#### case8(seller with enough balance - place market order)
+#### case8(seller place market order)
 1.buyer: placeLimitOrder price:8000  qty: 6000000000000000000 (6)
 
 2.seller: placeMarketOrder price:9000  qty: 6000000000000000000 (6)
 
-#### case9(seller place market order - fill all bids)
+#### case9(seller with enough quantity - fill all bids)
 1.buyer: placeLimitOrder price:800  qty: 6000000000000000000 (6)
+
 2.buyer: placeLimitOrder price:900  qty: 6000000000000000000 (6)
 
-2.seller: placeMarketOrder price:9000  qty: 20000000000000000000 (20)
+3.seller: placeMarketOrder price:9000  qty: 20000000000000000000 (20)
 
-#### case10(seller with less balance - place market order)
+#### case10(seller with less quantity - place market order)
 1.buyer: placeLimitOrder price:800  qty: 9000000000000000000 (6)
+
 2.buyer: placeLimitOrder price:900  qty: 6000000000000000000 (6)
 
-2.seller: placeMarketOrder price:9000  qty: 6000000000000000000 (8)
+3.seller: placeMarketOrder price:9000  qty: 6000000000000000000 (8)
+
+#### case11(seller with just a little more quantity - fill all bids)
+1.buyer: placeLimitOrder price:8000  qty: 6000000000000000000 (6)
+
+2.buyer: placeLimitOrder price:6000  qty: 60000000000000000 (0.06)
+
+3.buyer: placeLimitOrder price:5000  qty: 1000000000000000000 (6)
+
+4.seller: placeMarketOrder price:90000  qty: 6006000000000000000 (6.006)
