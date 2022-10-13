@@ -14,6 +14,7 @@ npx vuilder test v2.13.0/version13.order.market.hotfix.spec.ts --noneNode true
 npx vuilder test v2.13.0/version13.order.market.morecases.spec.ts --noneNode true
 npx vuilder test v2.13.0/version13.order.market.decimal.spec.ts --noneNode true
 npx vuilder test v2.13.0/version13.order.market.decimal.newmarket.spec.ts --noneNode true
+npx vuilder test v2.13.0/version13.order.limit.ordertype.spec.ts --noneNode true
 # npm run test_v2.13.0
 ```
 
@@ -106,3 +107,14 @@ WOW/VITE: tradeTokenDecimal < quoteTokenDecimal
 3.buyer: placeLimitOrder price:5000  qty: 1000000000000000000 (6)
 
 4.seller: placeMarketOrder price:90000  qty: 6006000000000000000 (6.006)
+
+### limit other orderType
+
+#### case1
+limit PostOnly order
+
+#### case2
+limit FillOrKill order
+
+#### case3
+limit ImmediateOrCancel order
