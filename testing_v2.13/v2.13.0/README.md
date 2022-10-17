@@ -135,3 +135,39 @@ WOW/VITE: tradeTokenDecimal < quoteTokenDecimal
 #### case5 - Market Order fill
 1. seller: placePostOnlyOrder price:8000  qty: 6000000000000000000 (6)
 2. buyer:  placeMarketOrder price:600  qty: 6000000000000000000 (6)
+
+### FillOrKill order cases
+#### case1 - not have tx
+1. seller: placeLimitOrder price:8000  qty: 6000000000000000000 (6)
+2. buyer: placeLimitOrder price:6000  qty: 6000000000000000000 (6)
+3. seller: placeFillOrKillOrder price:7000  qty: 2000000000000000000 (2)
+
+#### case2 - partially fill
+1. seller: placeLimitOrder price:8000  qty: 6000000000000000000 (6)
+2. buyer: placeLimitOrder price:6000  qty: 6000000000000000000 (6)
+3. seller: placeFillOrKillOrder price:6000  qty: 8000000000000000000 (8)
+
+#### case3 - fully fill sell
+1. seller: placeLimitOrder price:8000  qty: 6000000000000000000 (6)
+2. buyer: placeLimitOrder price:6000  qty: 6000000000000000000 (6)
+3. seller: placeFillOrKillOrder price:6000  qty: 2000000000000000000 (2)
+
+#### case4 - fully fill buy
+1. seller: placeLimitOrder price:8000  qty: 6000000000000000000 (6)
+2. buyer: placeLimitOrder price:6000  qty: 6000000000000000000 (6)
+3. buyer: placeFillOrKillOrder price:8000  qty: 2000000000000000000 (2)
+
+
+### ImmediateOrCancel order cases
+#### case1 - fully fill
+1. seller: placeLimitOrder price:8000  qty: 6000000000000000000 (6)
+2. buyer: placeImmediateOrCancelOrder price:8000  qty: 6000000000000000000 (6)
+
+#### case2 - partially fill
+1. seller: placeLimitOrder price:8000  qty: 6000000000000000000 (6)
+2. buyer: placeImmediateOrCancelOrder price:8000  qty: 8000000000000000000 (8)
+
+#### case3 - not fill at all
+1. seller: placeLimitOrder price:8000  qty: 6000000000000000000 (6)
+2. seller: placeFillOrKillOrder price:6000  qty: 6000000000000000000 (6)
+
