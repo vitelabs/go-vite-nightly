@@ -18,6 +18,11 @@ npx vuilder test v2.13.0/version13.order.market.decimal.newmarket.spec.ts --none
 npx vuilder test v2.13.0/version13.order.limit.ordertype.spec.ts --noneNode true
 
 # test postOnly order
+npx vuilder test v2.13.0/version13.order.postonly.spec.ts --noneNode true
+# test FillOrKill order
+npx vuilder test v2.13.0/version13.order.fillorkill.spec.ts --noneNode true
+# test ImmediateOrCancel order
+npx vuilder test v2.13.0/version13.order.immediateorcancel.spec.ts --noneNode true
 ```
 
 ## reusing ledger
