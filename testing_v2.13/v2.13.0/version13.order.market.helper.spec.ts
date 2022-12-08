@@ -48,13 +48,17 @@ describe("test version13 upgrade", () => {
     // need 10000 VITE in the dex balance 
     await dex.openNewMarket(fundContract, tradeToken, quoteToken);
     console.log("open new tradepair succeed!");
-
-    await sleep(2000);
-    // set takerBrokerFeeRate
-    await dex.marketAdminConfig(fundContract, 2, tradeToken, quoteToken, "vite_61214664a1081e286152011570993a701735f5c2c12198ce63", 0, 0);
-    // set makerBrokerFeeRate
-    await dex.marketAdminConfig(fundContract, 4, tradeToken, quoteToken, "vite_61214664a1081e286152011570993a701735f5c2c12198ce63", 0, 0);
   });
+
+  // it("test FundContract - Set broker fee rate ", async () => {
+  //   // set takerBrokerFeeRate(<=200)
+  //   var takerBrokerFeeRate = 0
+  //   await dex.marketAdminConfig(fundContract, 2, tradeToken, quoteToken, "vite_61214664a1081e286152011570993a701735f5c2c12198ce63", takerBrokerFeeRate, 0);
+
+  //   // set makerBrokerFeeRate(<=200)
+  //   var makerBrokerFeeRate = 0
+  //   await dex.marketAdminConfig(fundContract, 4, tradeToken, quoteToken, "vite_61214664a1081e286152011570993a701735f5c2c12198ce63", 0, makerBrokerFeeRate);
+  // });
 
   function sleep(ms: number) {
     return new Promise((resolve) => {

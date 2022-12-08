@@ -30,6 +30,23 @@ export async function marketAdminConfig(
   });
 }
 
+export async function tradeAdminConfig(
+  fundContract: vuilder.Contract, 
+  operationCode: number,
+  tradeTokenId: string,
+  quoteTokenId: string,
+  allowMining: boolean,
+  newQuoteToken: string,
+  quoteTokenType: number,
+  tokenTypeForTradeThreshold: number,
+  minTradeThreshold: number,
+  tokenTypeForMiningThreshold: number,
+  minMiningThreshold: number) {
+  await fundContract.call("TradeAdminConfig", [operationCode, tradeTokenId, quoteTokenId, allowMining, newQuoteToken, quoteTokenType, tokenTypeForTradeThreshold, minTradeThreshold, tokenTypeForMiningThreshold, minMiningThreshold], {
+    amount: "0",
+  });
+}
+
 export async function getOrderBooks(provider: any, tradeTokenId: string, quoteTokenId: string) {
   const marketOrderParam = {
     'TradeToken': tradeTokenId,
@@ -160,4 +177,21 @@ export function getSellerFee(
   } 
 
   return  new Big(price).mul(new Big(quantity)).mul(new Big(makerPlatformFeeRate + makerBrokerFeefeeRate)).mul(new Big(Math.pow(10, quoteTokenDecimal- tradeTokenDecimal))).round();
+}
+
+export async function burn(assetContract: vuilder.Contract, tokenId: string, burnAmount: string) {
+  await assetContract.call("Burn", [], {
+    tokenId: tokenId,
+    amount: burnAmount,
+  });
+}
+
+export async function switchConfig(
+  fundContract: vuilder.Contract, 
+  switchType: number,
+  enable: boolean) {
+
+  await fundContract.call("SwitchConfig", [switchType, enable], {
+    amount: "0",
+  });
 }

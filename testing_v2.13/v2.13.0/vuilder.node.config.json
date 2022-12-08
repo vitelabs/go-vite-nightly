@@ -3,7 +3,7 @@
   "nodes": {
     "virtual": {
       "name": "gvite",
-      "version": "v2.13.0-nightly-202211160701",
+      "version": "v2.13.0-nightly-202212080351",
       "http": "http://127.0.0.1:23456"
     }
   }

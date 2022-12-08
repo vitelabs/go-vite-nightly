@@ -14,7 +14,7 @@ npx vuilder test v2.13.0/version13.order.market.helper.spec.ts --noneNode true #
 kill -9 ${vuilder_node}
 cd node_modules/@vite/vuilder/bin 
 cp -R ledger ledger_dex_init
-rm -rf ledger ; cp -R ledger_dex_init ledger ; ./gvite-v2.13.0-nightly-202211160701 virtual
+rm -rf ledger ; cp -R ledger_dex_init ledger ; ./gvite-v2.13.0-nightly-${version} virtual
 
 # test market order
 npx vuilder test v2.13.0/version13.order.market.hotfix.spec.ts --noneNode true
@@ -174,3 +174,9 @@ WOW/VITE: tradeTokenDecimal < quoteTokenDecimal
 1. seller: placeLimitOrder price:8000  qty: 6000000000000000000 (6)
 2. seller: placeFillOrKillOrder price:6000  qty: 6000000000000000000 (6)
 
+### adjust vx proportion
+#### case1 
+assert VX proportion of trading、Staking、MarketMaking
+
+#### case2
+assert VX proportion of maintainer
