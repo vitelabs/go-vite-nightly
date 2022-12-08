@@ -1,0 +1,3 @@
+# gvite integration test
+1. refer to [github action of gvite integration testing generator]("https://github.com/vitelabs/go-vite-nightly/blob/master/.github/workflows/govite-integration-testing-generator.yml"). The main purpose is to generate the ledger blocks based on v2.11.0 and upload to the Release.
+2. refer to [github action of integration-testing]("https://github.com/vitelabs/go-vite-nightly/blob/master/.github/workflows/govite-integration-testing.yml"). The main purpose is to build a docker container based on the laster gvite release and using `gvite load` from the ledger of v2.11.0 to test the laster gvite.
