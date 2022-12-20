@@ -59,7 +59,7 @@ describe("test version13 upgrade", () => {
   });
 
 
-  it("test AssetContract - VX token protation", async () => {
+  it("test VX release - change VX proportion", async () => {
     const miningInfo = await provider.request("dex_getMiningInfo", 1099);
     var total = miningInfo["total"]
 
@@ -70,7 +70,7 @@ describe("test version13 upgrade", () => {
   });
 
 
-  it("test AssetContract - mineVx for maintainer", async () => {
+  it("test VX release - mineVx for maintainer", async () => {
     const miningInfo = await provider.request("dex_getMiningInfo", 1);
     var total = miningInfo["total"]
     assert(total, "10000000000000000000000")
